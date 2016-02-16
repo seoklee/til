@@ -2,14 +2,11 @@
 
 I usually forget some of the details that I listed below. I just reviewed the key points that I should know.
 
-
-There are basically two big keywords that you should know.
-
 ##Abstract
 
 - Abstract class cannot be instantiated. 
 
-There are some instance that it seems like you are instantiating an abstract class. But no, you are actually instantiating an annoynous subclass.)
+Someimtes, it looks like you are instantiating an abstract class. But no, you are actually instantiating an annoynous subclass.)
 	
 - Abstract method cannot have a body
 
@@ -32,8 +29,18 @@ Also, an abstract class may also have non-abstract methods.
 
 - Interface members are all public.
 
+Kinda makes sense. The implementations need to access the methods in order to impelment them.
+
+- Interface cannot be instantiated.
+
+Though, an object that implements the interface can be referred with the interface type.
 
 ##Other
+
 - A class implicitly inherit Object class.
 
 - A class can have a 'final' method if that method should not be inherited. 
+
+- A constructor of enum cannot be public.
+
+- You cannot use primitive data type for generics.
