@@ -372,3 +372,212 @@ def set_count(c):
 
 --------
 
+Collections
+
+tuple
+
+- immutable list
+	- ( ) instead of [ ] of the list
+- concatenation with + operator
+- repetition with * operator
+- can't make tuple with a single object.
+	- have to have trailing ,
+- to make empty tuple, just use ()
+
+~~~ python
+>>> h = (123)
+>>> type(h)
+<class 'int'>
+>>> h = (123,)
+>>> h
+(123,)
+~~~
+
+- tuple unpacking is nice.
+
+~~~python
+def min_max(arr):
+	return min(arr), max(arr)
+
+>>> min_max([12, 98 23])
+(12, 98)
+>>> lower, upper =  min_max([12, 98 23])
+~~~
+
+- you can make tuple out of iterable using tuple constructor
+- in and not in operator
+
+str
+
+- homogeneous immtable sequence of unicode
+- join function to "join" the iterable with connector
+
+~~~ python
+>>> abc = [a, b, c]
+>>> ''.join(abc)
+abc
+~~~
+
+- you can also split the string to iterable with delimitor 
+- partition methods divides a string into three around a separator: prefix, separator, suffix
+
+~~~ python
+>>> "unforgetable".partition("forget")
+('un', 'forget', 'able')
+>>> departure, _, arrival = "London:Edinburgh".partition(:)
+>>> departure
+London
+>>> arrival
+Edinburgh
+~~~
+
+- Format is a nice function. Use it!
+
+~~~ python
+>>> "the age of {0} is {1}".format('Jim', 32)
+'the age of jim is 32'
+
+>>> "the age of {} is {}".format('Jim', 32)
+'the age of jim is 32'
+
+>>> "the age of {name} is {age}".format('name='Jim', age=32)
+'the age of jim is 32'
+
+>>> pos = (12.4, 98.1, 82.5)
+>>> "Galactic position x={pos[0]} y={pos[1]} z={pos[2]}".format(pos=pos)
+"Galactic position x=12.4 y=98.1 z=82.5"
+
+>>> import math
+>>> "Math constants: pi={m.pi}, e={m.e}".format(m=math)
+'Math constants: pi=3.1459..., e=2.718...
+>>> "Math constants: pi={m.pi:.3f}, e={m.e:3f}".format(m=math)
+'Math constants: pi=3.142, e=2.718
+~~~
+
+range
+
+- arithmetic progrssion of integer
+- you can list-ify a range! 
+- don't use range to iterate list
+	- unpythonic
+- use enumerate for needing a counter!
+
+list
+
+- slicing. s[start:stop]
+- to copy list, use s[:] by giving full list. 
+	- or... s.copy()
+	- or... list(s)
+- be careful! copies are shallow
+
+~~~ python
+>>> a = [ [1, 2], [3, 4] ]
+>>> b = a[:]
+>>> a is b
+False
+>>> a == b
+>>> a[0]
+[1,2]
+>>> b[0]
+[1,2]
+>>> a[0] = [8,9]
+>>> a[0]
+[8,9]
+>>> b[0]
+[1,2]
+>>> a[1].append(100)
+>>> a[1]
+[3,4, 100]
+>>> b[1]
+[3,5, 100]
+~~~
+
+- repetition w/ * operator
+	- repetitiion is SHALLOW
+
+~~~ python
+>>> l = [ [1, 2, 3] ]
+>>> l = l * 5
+>>> l[0].append(4)
+>>> l
+[ [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3] ]
+~~~
+
+- index will find the value in the array and return the index in the arr
+- in and not in also available
+- del to remove the index and renumber the element
+	- remove to remove the first matching values
+- insert(index, item)
+- concatenate list + operator will create a new list
+- concatenate list += operator or extend() will do it inplace
+- sort() & reverse
+	- you can also put key to sort it in some standard
+- sorted() built in function sorts any iterable series and returns a list
+- reversed() built-in function reverse any iterable series and return a reverse iterator. (list-ify afterward!)
+
+
+dict
+
+- {}
+- keys must be immutable 
+- value can be mutable
+- dictionary itself is mutable
+- arbitary order
+- dict() constructor accepts
+	- iterable series of key-value 2-tuples
+	- keyword arguments - requires keys are valid Python identifiers
+	- a mapping, such as another dict
+- dict copying is shallow in default
+	- .copy() for copying
+	- extends dictionary with update()
+		- target will replace the source on update()
+- values() for iterable views onto the series of values
+- items for iterable view onto series of key-value tuples
+- in & not in operator for keys
+- del d[key] for deleting the entry
+- pprint (pretty printing)
+	- python standard library pprint module
+
+~~~ python
+>>> from pprint import pprint as pp
+>>> pp(d)
+{
+... 
+...
+...
+}
+~~~ 
+
+set
+
+- itself is mutable
+- objects itself must be mutable
+- comma separated with {} or set() constructor
+- duplicates are discarded
+- in & not int operator
+- add method to add stuff
+- update to do multiple addition
+- remove raises KeyError if not exists 
+	- discard always succeeds
+- copy() or copy by constructor
+	- copies are shallow
+- set algebra
+	- union() opeartion
+	- intersection() operation
+	- difference() 
+	- symmetric_difference(t)
+		- everything except intersection
+	- issubset()
+	- issuperset()
+	- isdisjoint()
+		- no member in common
+
+Protocol
+
+- to implement protocol, must support certain operations
+	- most collections implement container, sized, and iterable
+		-  container : in & not int
+		-  sized : len
+		-  iterable : can produce iterator with iter(s)
+		-  sequence : retrieve elements by index. find items by value. count items. produce a reversed sequence
+- all except set and dict are sequences
