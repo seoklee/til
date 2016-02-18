@@ -243,3 +243,132 @@ Shebang
 
 ----
 
+Python objects are immutable
+
+~~~
+//points to 1000 object
+x = 1000
+// points to 500 object and 1000 object will be garbage collected
+x = 500 
+~~~
+
+id function
+ 
+- returns unique identifier for each object
+
+is operator
+
+- tests two references refers to the same object
+
+LIST IS MUTABLE.
+
+No variables. Only names references to objects
+
+~~~ 
+>>> p = [4, 5]
+>>> q = [4, 5]
+>>> p == q
+True
+>>> p is q
+False
+~~~
+
+This makes sense. g and f pointed to the same thing at one point. But it points to something else in the function. The value of the reference is copied, not the value of the object.
+
+~~~ python
+>>> f = [14, 23, 37]
+>>> def replace(g):
+...  	g = [17, 28, 45]
+... 	print("g = ", g)
+... 
+>>> replace(f)
+g = [17, 28, 45]
+>>> f
+[14, 23, 37]
+~~~
+
+####Default argument values are evaluated when def is evaluated. They can be modified linke any other object.
+
+Always use immutable object for default argument
+
+~~~ python
+
+def add_spam(menu=[]):
+	menu.append("spam")
+	return menu
+
+>>> add_spam()
+[spam]
+>>> add_spam()
+[spam, spam]
+...
+
+def add_spam(menu=None):
+	if menu is None:
+		menu = []
+	menu.append('spam')
+	return menu
+
+>>> add_spam()
+[spam]
+>>> add_spam()
+[spam]
+
+~~~
+
+object references have no type.
+
+Scopes are contexts in which named reference can be looked up
+
+- local
+- enclosing
+	- any and all enclosing function
+- global
+- built-in
+	- provided by the builtins module
+
+LEGB rule
+
+
+~~~python 
+count = 0
+
+def show_count():
+    print("count : ", count)
+    
+
+def set_count(c):
+	count = c
+~~~
+~~~
+>>> show_count()
+0
+>>> set_count(5)
+>>> show_count()
+0
+~~~
+
+Makes sense. new varaible called count is created at set_count. How do we fix it with global variable?
+
+
+~~~python 
+count = 0
+
+def show_count():
+    print("count : ", count)
+    
+
+def set_count(c):
+	global count
+	count = c
+~~~
+~~~
+>>> show_count()
+0
+>>> set_count(5)
+>>> show_count()
+5
+~~~
+
+--------
+
