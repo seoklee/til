@@ -344,3 +344,348 @@ try {
 	}
 }
 ~~~
+------
+
+Functions expression
+
+- optional name
+	- recursively or debugger uses it
+
+- funciton objcts are first class
+	- maybe passed as an argument to a function
+	- maybe returned from a function
+	- assigned to a variable
+	- stored in an object or array
+- function objects inherit from 
+
+#####a var declared anywhere within a function is visible everywhere within the function
+
+function statement
+
+- mendatory name
+- function statement is a short-hand for a var statement with a function value.
+
+~~~ javascript
+// this is
+function foo() {}
+
+//basically this...
+var foo = function foo() {};
+
+//which in turn expands to this.
+var foo = undefined;
+foo = function foo() {};
+~~~
+
+function expression vs function statment
+
+- if the first token in a statement is function, then it is a function statement.
+
+Declare all variables at the top of the function.
+
+Declare all functions before you call them.
+
+two psudo parameters
+
+- arguments & this
+	- function is invoked to its parameters, it also gets special parameter called arguments.
+	- it contains all of the arguments from the invocation
+	- array like object
+	- argument.length is the number of arguments passed
+	- weird interaction with parameter...
+
+example
+
+~~~ javascript
+function sum() {
+	var i,
+		n = arugments.length,
+		total = 0;
+	for (i = 0; i < n; i += 1) {
+		total += arguments[i];
+	}
+	return total;
+}
+
+var ten = sum(1, 2, 3, 4);
+~~~
+
+this
+
+- this param contains a reference to the object of invocation
+- allows a method to know what object it is concerned with.
+- allows a single function object to service many objects.
+- key to peototypal inheritance.
+
+Invocation
+
+- a function called with too many arguments, the extra arguments are ignored
+- too few of arguments, rest will be undefined.
+- no implicit type checking on the arguments
+
+####method form
+
+~~~ javascript
+// method form
+thisObject.methodName(arguments)
+thisObject[methodName](arguments)
+~~~
+
+- when a function is called in the method form, this is set to thisObject, the object containing the function
+- allows methods to have areference to the object of interest.
+
+####function form
+
+~~~ javascript
+// function form
+functionObject(arguments)
+~~~
+
+- when a function is called in the function form. this is set to the global object.
+- inner function does not get access to the outer this
+	- helper function does not have the reference.
+	- work around : create that var at the ouside function and pass it in.
+
+####constructor form
+
+~~~ javascript
+new FunctionValue(arguments)
+~~~
+
+- when a function is called with the new operator, a new object is created and assigened to this.
+- if no explicit return value, this will be returned
+
+#### apply form
+
+~~~ javascript
+funcitonObject.apply(thisObject, arguments)
+funcitonObject.call(thisObject, arguments....)
+~~~
+
+- explicitely specifying thisObject.
+- can also take an array of params or a sequence of param.
+
+-----
+
+subroutine
+
+- function, lambda, func... etc
+- why?
+	- code reuse
+	- decomposition
+	- modularity
+	- expressiveness
+	- higher order
+
+- closure
+	- context of an inner function includes the scope of the outer function.
+	- an inner function enjoys that context even after the parent function have returned.
+	- function scope acts like block scope
+
+~~~ javascript
+// bad because of global
+
+var name = ['zero', 'one', 'two',
+			   'three', ...]
+
+var digit_name = function(n) {
+	return names[n]
+};
+
+alert(digit_name(3));
+
+//----
+
+//bad, because have to create 10 elements every invocation
+
+var digit_name function(n) {
+	
+	var name = ['zero', 'one', 'two',
+				   'three', ...]
+
+	return names[n]
+}
+
+//-----
+
+//closure
+  
+var digit_name = (function(n) {
+	var name = ['zero', 'one', 'two',
+				   'three', ...]
+
+	return function (n) {
+		return names[n];
+	};
+}());
+
+alert(digit_name(3));
+
+//------
+
+//lazy (don't do this), break first class-ness
+
+var digit_name = function (n) {
+	var name = ['zero', 'one', 'two',
+				   'three', ...]
+
+	digit_name = function(n) {
+		return names[n];
+	};
+	return digit_name(n);
+}
+~~~
+
+-----
+
+Psudoclassical
+
+- if we replace the original prototype object, then we can inherit another object's stuff.
+
+
+~~~ javascript
+function Gizmo(id) {
+	this.id = id;
+} 
+
+Gizmo.prototype.toString = function() {
+	return "gizmo" + this.id;
+}
+
+//---
+
+function Hoozit(id) {
+	this.id = id;
+	
+}
+Hoozit.prototype = new Gizmo();
+Hoozit.prototype.test = function (id) {
+	return this.id === id;
+}
+
+//----
+Nicer
+
+var gizmo = new_constructor(Object, function (id) {
+	this.id = id;
+}, {
+	 toString: function() {
+	 	return "gizmo " + this.id;
+	 }
+
+});
+
+var hoozit = new_constructor(gizmo, function (id) {
+	this.id = id;
+}, {
+		test: function (id) {
+			return this.id === id;
+		}
+	}
+});
+~~~  
+
+function as module
+
+~~~ javascript
+(function() {
+	var ...
+	function ...
+	function ...
+}());
+
+//-----
+
+var singleton = (function () {
+	var privateVar;
+	function privateFunc(x) {
+		... privateVar...
+	}
+	return {
+		firstMethod: function(a, b) {
+			...privatevar
+		},
+		secondMethod: function (c) {
+			...privateFunction()...
+		}
+	};
+}());
+~~~
+
+Power constructors
+
+
+1. make an object
+
+- object literal, new, object.create, call another power constructor
+
+2. define some variables and function
+
+- these become private members
+
+
+3. augment the object with privileged methods.
+4. return the object
+
+~~~ javascript
+
+// will not use new prefix
+function myPowerConstuctor(x) {
+	var that = otherMaker(x);
+	var secret = f(x);
+	that.priv = function() {
+		... secret x that ...
+	};
+	return that;
+}
+~~~
+
+~~~ javascript
+function gizmo(id) {
+	return {
+		id: id,
+		toString: function() {
+			return "gizmo" + this.id;
+		}
+	};
+}
+
+function hoozit(id) {
+	var that = gizmo(id);
+	that.test = function(testid) {
+		return testid === this.id
+	};
+	return that;
+}
+
+privacy
+function gizmo(id) {
+	return {
+		toString: function() {
+			return "gizmo" + id;
+		}
+	};
+}
+
+function hoozit(id) {
+	var that = gizmo(id);
+	that.test = function(testid) {
+		return testid === this.id
+	};
+	return that;
+}
+
+super method
+
+function hoozit(id) {
+	var secret = {};
+	var that = gizmo(id, secret);
+	var super_toString = that.toString;
+	that.test = function (testid) {
+		
+	};
+
+}
+
+
+~~~
