@@ -658,7 +658,8 @@ function hoozit(id) {
 	return that;
 }
 
-privacy
+//privacy
+
 function gizmo(id) {
 	return {
 		toString: function() {
@@ -675,7 +676,7 @@ function hoozit(id) {
 	return that;
 }
 
-super method
+//super method
 
 function hoozit(id) {
 	var secret = {};
@@ -686,6 +687,124 @@ function hoozit(id) {
 	};
 
 }
+~~~
 
+~~~ javascript
+function memoizer(memo, formula) {
+	var recur = function(n) {
+		var result = memo[n];
+		if (typeof result !== 'number') {
+			result = formula(recur, n);
+			memo[n] = result
+		}
+		return result;
+	);
+	return recur;
+};
 
+var factorial = memoizer([1,1], function(recur, n) {
+	return n * recur(n - 1);
+});
+
+var fibonacci = memoizer([0,1], function(recur, n) {
+	return recur(n - 1) * recur(n - 2);
+});
+
+~~~
+
+Don't make function in a loop
+
+- it can be wasteful b/c a new function object is created on every iteration
+- it can be confusing b/c the new function closes over the loop's variables not over their current value
+ 
+~~~ javascript
+//creating event handler in a loop
+
+for(var i ...) {
+	div_id = divs[i].id
+	divs[i].onclick = function () {
+		alert(div_id);
+	};
+}
+
+// will not work because the loop's variable not over their current value
+
+var i;
+function make_handler(div_id) {
+	return function() {
+		alert(div_id);
+	}
+}
+
+for (i ...) {
+	div_id = divs[i].id;
+	divs[i].onclick = make_handler(div_id);
+}
+~~~
+
+------
+
+Problems 
+
+- Write a function that takes an argument returns that argument
+
+~~~ javascript
+
+function identify(n) {
+	return n;
+}
+~~~
+
+- write two binary functions, add adnd mul, that take two numbers and return their sume and product.
+
+~~~ javascript
+function add(i, j) {
+	return i + j;
+}
+
+function mul(i, j) {
+	return i * j;
+}
+~~~
+
+- write a function that takes an argument and returns a function that returns that argument.
+
+~~~ javascript
+
+function identify(n) {
+	return function() {
+		return n;
+	}
+}
+
+idf = identify(3);
+idf() //3
+~~~
+
+- write a function that adds from two invocations.
+
+~~~ javascript
+function addf(x) {
+	return function(y) {
+		return x + y;
+	}
+}
+
+addf(3)(4) //7
+~~~
+
+- write a function that takes a binary function, and mkes it callable with two invocations.
+
+~~~ javascript
+function applyf(binary) {
+	return function(x) {
+		return function(y) {
+			return binary(x,y);
+		};
+	};
+}
+
+addf = applyf(add);
+addf(3)(4) 			// 7
+applyf(mul)(5)(6)	// 30
 ~~~
