@@ -614,7 +614,6 @@ var singleton = (function () {
 
 Power constructors
 
-
 1. make an object
 
 - object literal, new, object.create, call another power constructor
@@ -807,4 +806,172 @@ function applyf(binary) {
 addf = applyf(add);
 addf(3)(4) 			// 7
 applyf(mul)(5)(6)	// 30
+~~~
+
+- write a function that takes a function and an argument, and returns a function that can supply a second argument. (aka currying)
+
+~~~ javascript
+function curry(func, x) {
+	return function(y) {
+		return func(x,y);
+	}
+}
+
+add3 = curry(add, 3);
+add3(4) // 7
+curry(mul, 5)(6)		// 30
+~~~
+
+- without writing any new function, show three ways to create the inc function
+
+~~~ javascript
+inc(5)
+inc(inc(5))
+
+inc = addf(1);
+inc = applyf(add)(1);
+inc = curry(add, 1);
+~~~
+
+- write methodize, a function that converts a binary function to a method.
+
+~~~ javascript
+function methodize(func) {
+	return function(x) {
+		return func(this, x);
+	}
+}
+
+Number.prototype.add = methodize(add);
+(3).add(4) // 4
+~~~ 
+
+- write demethodize, a function that converts a method to a binary function.
+
+~~~ javascript
+function demethodize(func) {
+	return function(x,y) {
+		return func.call(x,y);
+	}
+}
+
+demethodize(Number.prototype.add)(5,6) 	//11
+~~~
+
+- write a function twice that takes a binary function and returns a unary function that passes its argument to the binary function twice.
+
+~~~ javascript
+function twice(func) {
+	return function(x) {
+		return func(x, x);
+	}
+}
+
+var double = twice(add);
+double(11) // 22
+var square = twice(mul);
+square(11)
+~~~
+
+- write a function compose u that takes two unary functions, and returns a unary function that calls them both.
+
+~~~ javascript
+function composeu(unar1, unar2) {
+	return function (x) { 
+		return unar2(unar1((x)));
+	};
+}
+
+composeu(double, square)(3)	// 36
+~~~
+
+- write a function composeb that takes two binary functions and returns a function calls them both.
+
+~~~ javascript
+function composeb(bin1, bin2) {
+	return function(x,y,z) {
+		return  bin2(bin1(x,y), z);
+	};
+}
+
+composeb(add, mul)(2,3,5)		//25
+~~~
+
+- write a function that allows another function to only be called once.
+
+~~~ javascript
+
+function once(func) {
+	var once = false;
+	
+	return function(x, y) {
+		if(!once) {
+			once = true;
+			return func(x, y);
+		} else {
+			throw new Error("nah");
+		}
+	}
+}
+
+//correct answer
+function once(func) {
+	return function() {
+		var f = func;
+		func = null;
+		return f.apply(
+			this,
+			arguments
+		);
+	};
+}
+
+add_once = once(add);
+add_once(3,4)		// 7
+add_once(3,4)		// throw!
+~~~
+
+- write a factory function that returns two functions that implement an up/down counter.
+
+~~~javascript
+function counterf(x) {
+	return {
+		inc : function () {
+			x = x + 1;
+			return x;
+		},
+		
+		dec : function() {
+			x = x - 1;
+			return x;
+		}
+	};
+}
+
+counter = counterf(10);
+counter.inc();
+counter.dec();
+~~~
+
+- make a revocable function that takes a nice function, and returns a revoke function that denies access to the nice function, and an invoke function that can invoke the nice function until it is revoked.
+
+~~~ javascript
+function revocable(func) {
+	return {
+		invoke : function(x) {
+			return nice.apply(
+				this,
+				arguments
+			);
+		},
+		revoke : function() {
+			invoke = null;
+		}
+	};
+}
+
+tmp = revocable(alert);
+tmp.invoke(7);		// alert 7
+temp.revoke();
+temp.invoke(8);		// throw!
 ~~~
