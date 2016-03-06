@@ -6,6 +6,9 @@ Tmux is a terminal mertiplexer, which let you easily swich between several progr
 
 ####prefix == 'control + b"
 
+
+## Session 
+
 -----
 
 new session
@@ -20,6 +23,9 @@ attach a session
 
 ~~~
 $ tmux attach -t session_name
+$ tmux a -t session_name
+or
+$ tmux a
 ~~~
 
 -----
@@ -36,6 +42,7 @@ list existing sessions
 
 ~~~
 $ tmux list-sessions
+$ tmux ls
 ~~~
 
 -----
@@ -47,6 +54,10 @@ $ tmux detach (prefix + d)
 ~~~
 
 -----
+
+
+## Windows 
+
 
 create a new window
 
@@ -86,7 +97,7 @@ splits the window into two horizontal panes
 $ tmux split-window -h (prefix + %)
 ~~~
 
-----
+## Panes
 
 swaps pane with another in the specified direction
 
@@ -94,11 +105,15 @@ swaps pane with another in the specified direction
 $ tmux swap-pane -[UDLR] (prefix + { or })
 ~~~
 
----
+----
+
 selects the next pane in the specified direction
 ~~~
 $ tmux select-pane -[UDLR]
 ~~~
+
+----
+
 selects the next pane in numerical order
 
 ~~~
@@ -106,5 +121,3 @@ $ tmux select-pane -t :.+
 ~~~
 
 -----
-
- 
