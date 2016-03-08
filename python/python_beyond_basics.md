@@ -1015,3 +1015,74 @@ You can force the abstraction by raising an error in the base class Now subclass
 
 What you can do, then. You can make volume_ft3 to return a return-val from a function called _calc_volume(). (with @property) Then _calc_volume can be overriden elsewhere
 
+
+------
+
+# Strings and Representation
+
+str() and repr() are functions for making string representations from python objects which call the methods __str__() and __repr__()
+
+repr()
+
+- produces an unambiguous string representation of an object
+	- type of the object and all the attributes
+	- some suggest that it would be almost like a constructor
+	- should generally contain more info than the result of str
+		- str for the clients
+		- repr for the developers
+	- will be used at PDB or other debugger
+	- always write a repr() for your classes
+
+~~~ 
+>>> p = Point2D(x=12, y=15)
+>>> repr(p)
+Point2D(x=12, y=15)
+~~~
+
+str()
+
+- produces a readable, human-friendly representation of an object
+
+~~~
+>>> p = Point2D(123, 456)
+>>> str(p)
+(123, 456)
+~~~
+
+By default, str() function will call repr() if __str__() is not defined. But it's not true for reverse. 
+
+repr() is used when showing elements of a collection
+
+format method will call __format__() of that object.
+
+- f is for optional format specification after colon 
+	- {field_name:format_spec}
+	- use str() for default
+	- if you want to explicitly call repr(), you have to do {!r} in format's string argument, and {!s} to call str()
+
+~~~ python
+class Something:
+	...
+	
+	def __format__(self, f):
+		if f=='r':
+			return'{}, {}'.format(self.y, self.x)
+		else:
+			return'{}, {}'.format(self.x, self.y)
+~~~
+
+reprlib offers a good, useful, alternate to repr()
+
+####built-in functions
+
+ascii()
+
+- replaces non-ASCII characters with escape sequences
+
+ord() & chr()
+
+- ord() convert a single character to its Integer Unicode codepoint
+- chr() converts an integer Unicode codepoint to a single character.
+
+
+
