@@ -1,6 +1,155 @@
-#Creational Design Pattern
+#Design Pattern
+
+##Creational Design Pattern
+
+- How objects are built
+	- Singleton
+	- Builder
+	- Prototype
+	- Factory
+	- AbstractFactory
+
+##Singleton
+
+- Only one instance created
+- guarantees control of a source
+- lazily loaded
+- Ex
+	- Runtime
+	- Logger
+	- Spring Beans
+	- Graphics Managers
+
+- CLass is responsible for lifecycle
+- static in nature
+- needs to be thread safe
+- private instance
+- private constructor
 
 
+~~~ java
+Runtime singletonRuntime = Runtime.getRuntime();
+
+singletonRuntime.gc();
+
+System.out.println(singletonRuntime);
+
+
+Runtime anotherInstance = Runtime.getRuntime();
+
+System.out.println(anotherInstance);
+
+if(singletonRuntime == anotherInstance) {
+	System.out.println("They are the same instance");
+}
+~~~
+
+Ex.
+
+### Create Singleton
+### Demonstrate only one instance created
+
+~~~ java
+DbSingleton.java
+
+package com.plurasight.singleton
+
+public class DbSingleton {
+	private static DbSingleton instance = new DbSingleton();
+	private DbSingleton() {
+	
+	}
+	public static getInstance() {
+		return instance;
+	}
+}
+~~~
+
+~~~ java
+DbSingletonDemo.java 
+
+package com.plurasight.singleton
+
+public class DbSingletonDemo {
+	public static void main(String arg[]) {
+		DbSingleton instance = DbSingleton.getInstace();
+		
+		//ERROR
+		DbSingleton anotherInstance = new DbSingleton();
+	}
+
+}
+~~~
+
+### lazy loaded
+
+~~~ java
+DbSingleton.java
+
+package com.plurasight.singleton
+
+public class DbSingleton {
+	private static DbSingleton instance = null;
+	
+	private DbSingleton() {
+	
+	}
+	public static getInstance() {
+		if(instance == null) {
+			instnace = new DbSingleton();
+		}
+		return instance;
+	}
+}
+~~~ 
+
+### thread safe operation
+
+- you only want to run it thread-safe when the instance is null
+
+~~~ java
+DbSingleton.java
+
+package com.plurasight.singleton
+
+public class DbSingleton {
+	private static DbSingleton instance = null;
+	
+	private DbSingleton() {
+	
+	}
+	public static getInstance() {
+		if(instance == null) {
+			synchronized (DbSingleton.class) {
+				if(instance == null) {
+					instnace = new DbSingleton();
+				}
+			}
+		}
+		return instance;
+	}
+}
+~~~
+
+###Singleton
+
+- returns same instance
+	- one constructor method - no args
+- No Interface
+
+###Factory
+
+- Returns various instances
+	- multiple constructor
+- Interface driven
+- Adaptable to environment more easily
+
+### Pitfall
+
+- often used
+- difficult to unit test
+- if not careful, not thread-safe
+- 
 
 ---
 
@@ -18,9 +167,6 @@ Design pattern matters
 	- like a template
 - can speed production in a team
 - generally improves system and applicaiton design
-
-
----
 
 ##Adapter Design Pattern
 
