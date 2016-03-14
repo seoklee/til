@@ -9,6 +9,8 @@
 	- Factory
 	- AbstractFactory
 
+---
+
 ##Singleton
 
 - Only one instance created
@@ -27,6 +29,8 @@
 - private constructor
 
 
+Ex.
+
 ~~~ java
 Runtime singletonRuntime = Runtime.getRuntime();
 
@@ -44,7 +48,6 @@ if(singletonRuntime == anotherInstance) {
 }
 ~~~
 
-Ex.
 
 ### Create Singleton
 ### Demonstrate only one instance created
@@ -152,6 +155,177 @@ public class DbSingleton {
 - 
 
 ---
+
+##Builter Pattern
+
+- Handles a complex constructor
+	- large amount of parameters
+- immutability
+- example
+	- StringBuilder
+	- DocumentBuilder
+	- Locale.Builder
+
+- Filexibility over telescoping constructors
+	- telescoping constrcutors : creating multiple constructors by altering each parameter. 
+- static inner class
+- calls appropriate constructor
+- negates the need for exposed setter
+- can take advantage of generics
+
+Example : Stringbuilder
+
+~~~ java
+StringBuilder builder = new Stringbuilder();
+builder.append("This is an example ");
+builder.append("of the builder pattern ");
+builder.append("42");
+//build.build()
+System.out.println(build.toString());
+~~~
+
+###Demonstrate Exposed Setter
+
+~~~ java
+// mutable. does not signify which is required, etc
+
+public class LunchOrderBean {
+	private String bread;
+	private String condiment;
+	private String dressing;
+	private String meat;
+	
+	public LunchOrderBean() {
+		
+	}
+	
+	//getters and setters
+}
+~~~
+
+###Demonstrate Telescoping Consturctors
+
+~~~ java
+// Immutable... but what if I want a lunch with meat and lettuce only? 
+
+public class LunchOrderTele {
+	private String bread;
+	private String condiment;
+	private String dressing;
+	private String meat;
+	
+	public LunchOrderTele(String bread) {
+		this.bread = bread;
+	}
+
+	public LunchOrderTele(String bread, String codiments) {
+		this(bread);
+		this.codiments = codiments;
+	}
+
+	public LunchOrderTele(String bread, String codiments, String dressing) {
+		this(bread, codiments)
+		this.dressing = dressing;
+	}
+
+	public LunchOrderTele(String bread, String codiments, String dressing, String meat) {
+		this(bread, codiments, dressing)
+		this.meat = meat;
+	}	
+	
+	//getters
+}
+~~~
+
+###Create Builder
+
+~~~java
+//immutable and flexible
+public class LunchOrder {
+
+	public static class Builder {
+		private String bread;
+		private String condiment;
+		private String dressing;
+		private String meat;
+		
+		public LunchOrder build() {
+			return new LunchOrder(this);
+		}
+		
+		public Builder bread(String breadk) {
+			this.bread = breadk;
+			return this;
+		}
+		
+		public Builder condiments(String condiments) {
+			this.condiments = condiments;
+			return this;		
+		}
+		
+		public Builder meat(String meat) {
+			this.meat = meat;
+			return this;		
+		}
+		
+		public Builder dressing(String dressing) {
+			this.dressing = dressing;
+			return this;		
+		}		
+		
+	}
+	
+	private final String bread;
+	private final String condiment;
+	private final String dressing;
+	private final String meat;
+	
+	private LunchOrder(Builder builder) {
+		this.bread = builder.breadk;
+		this.codiments = builder.condiments;
+		this.dressing = builder.dressing;
+		this.meat = builder.meat
+	}
+	
+	//getters
+}
+
+~~~
+~~~ java
+public class BuilderLunchOrderDemo(String args[]) {
+	LunchOrder.Builder builder = new LunchOrder.Builder();
+	builder.bread("Wheat").condiments("Lettuce").dressing("Mayo").meat("Turkey");
+	
+	LunchOrder lunchOrder = builder.build();
+
+}
+~~~
+
+###Pitfalls
+
+- immutable
+- inner static class
+- designed first
+- complexity
+
+###Contrast
+
+Builder
+
+- handles complex constructors
+- no interface required
+- can be a separate class
+- works with legacy code
+
+Prototype
+
+- implemented around a clone
+- avoids calling complex constructor
+- difficult to implement in legacy code
+
+---
+
+
 
 #Structural Design Pattern
 
