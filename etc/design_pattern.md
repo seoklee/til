@@ -325,6 +325,170 @@ Prototype
 
 ---
 
+# Prototype
+
+- avoids costly creation
+- avoids subclassing
+- typically does not use "new"
+- often utilizes an interface
+- Usually implemented with a Registry
+- Example
+	- java.lang.Object#clone()
+
+- costly to create... but copying the member variable will be good? use this
+- clone/cloneable
+- avoids keyword "new"
+- although a copy, each instance unique
+- costly constructor not handled by client
+- can still utilize parameters for constructor
+- shallow vs deep copy
+
+~~~ java
+publc class Statement implements Cloneable {
+	
+	public Statement(String sql, List<String> parameters, Record record) {
+		this.sql = sql;
+		this.parameters = parameters;
+		this.record = record;
+	}
+	
+	public Statement clone() {
+		try {
+			return (Statement) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}
+
+
+public class Record {
+
+}
+~~~
+
+~~~ java
+//shallow clone
+public class PrototypeEverydayDemo {
+	
+	public static void main(String args[]) {
+		String sql = "select * from movies where title = ?";
+		List<String> parameters = new ArrayList<>();
+		parameters.add("Star wars");
+		Record record = new record();
+		Statement firstStatement = new Statement(sql, parameters, record);
+		Statement secondStatement = firstStatement.clone()
+		//second statement's and first statment's record are the same reference.
+	}
+}
+
+
+~~~ 
+
+~~~ java
+public abstract class Item implements Clonable {
+	private String title;
+	private double price;
+	private String url;
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+	
+	//getter and setters.
+}
+
+public class Books extends Item {
+	//getter and setter
+}
+
+public class Movie extends Item {
+	//getter and setter
+}
+
+public class Registry {
+	private map<String, Item> items = new HashMap<String, item>();
+	public Registry() {
+		loadItems();
+	}
+	
+	public Item createItem(String type) {
+		Item item = null;
+		
+		try {
+			item = (Item)items.get(type)).clone();
+		} 
+		catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		
+		return item
+	}
+	
+	private void loadItems() {
+		Movie movie = new Movie();
+		movie.setTitle("Basic Movie");
+		..
+		items.put("Movie", movie);
+		
+		Book book = new Book();
+		book.setNumberOfPages(232);
+		...
+		items.put("Book", book);
+	}
+
+}
+~~~
+
+~~~ java
+
+public static void main(String[] args) {
+	Registry registry = new registry();
+	Movie movie = (Movie) registry.createItem("Movie");
+	movie.setTitle("Creational Patterns in Java");
+	
+	System.out.println(movie);
+	System.out.println(movie.getRuntime());
+	System.out.println(movie.getTitle());
+	System.out.println(movie.getUrl());
+	
+	Movie anotherMovie = (Movie)registry.createItem("Movie");
+	anotherMovie.setTitle("Gang of Four");
+	
+	System.out.println(anotherMovie);
+	System.out.println(anotherMovie.getRuntim());
+	System.out.println(anotherMovie.getTitle());
+	System.out.println(anotherMovie.getUrl());
+}
+
+~~~
+
+### Pitfalls
+
+- sometimes not clear when to use
+- used with other patterns
+	- Registry
+- Shallow VS Deep Copy
+
+####Prototype
+
+- Lighter weight construction
+	- copy constructor or clone
+- shallow vs deep
+- copy of itslef
+
+####Factory
+
+- Flexible objects
+	- multiple constructor
+- Concrete instance
+- Fresh Instance
+
+
+---
+
 
 
 #Structural Design Pattern
