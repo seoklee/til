@@ -56,12 +56,10 @@ ERROR because __main__.py does not exists
 - directory and zip file containing an entry point for python execution
 	- put __main__.py in the directory.
 
-Duck Tails
-
 - Modules as Singletons.
 	- Modules are only executed once, when first imported
 - Modules initialization order is well defined. So it's very good to use as singleton.
-
+s
 -------
 
 #### Function
@@ -393,8 +391,8 @@ def hello(name):
 >>> from call_count import hello
 >>> hello('lee')
 Hello, lee
->>> hello('tyler')
-Hello, tyler
+>>> hello('song')
+Hello, song
 >>> hello.count
 2
 ~~~
@@ -1084,5 +1082,172 @@ ord() & chr()
 - ord() convert a single character to its Integer Unicode codepoint
 - chr() converts an integer Unicode codepoint to a single character.
 
+
+
+---
+
+#Numeric and Scalar Types
+
+###int
+
+- unlimited precision signed integer
+
+###float
+
+- 64 bit double precision, aka double
+	- 53 bits of binary precision
+- 15 to 17 bits of decimal precision
+
+conversion to int to float and vice versa can result in loss of data. Some fraction cannot be represented perfectly, too.
+
+###decimal module contains Decimal class
+
+- decimal floating point
+- configurable (although finite) precision
+- defaults 28 digits of decimal precision
+
+Always quote literal fractional value.
+~~~ python
+>>> from decimal import Decimal
+>>> Decimal(7)
+Decimal('7')
+>>> Decimal('0.8')
+Decimal('0.8')
+>>> Decimal('0.8') - Decimal('0.7')
+Decimal('0.1')
+>>> Deciamal(0.8) - Decimal(0.7)
+0.09999989898989
+~~~
+
+It's because binary, inaccurate number are used for floats without quotes
+
+decimal.getcontext().traps[decimal.FloatingOperation] = True
+
+- prevents any float operation
+
+decimal.getcontext().prec
+
+- significant figure
+
+Different modulus & division operation for different number type.
+
+- be careful!
+
+###Fraction
+
+fracion module containing the class Fraction
+
+~~~ python
+>>> from fractions import Fraction
+>>> two_thirds = Fraction(2, 3)
+>>> four_fifths = Fraction(4, 5)
+>>> Fraction('0.1')
+>>> Fraction(Decimal('0.1'))
+>>> floor(Fraction('4/3'))
+1
+~~~
+
+### Complex Number
+
+### Base Conversion
+
+~~~ python
+>>> 0b101010
+42
+>>> 0o52
+42
+>>> ox2a
+42
+>>> hex(42)
+'0x2a'
+>>> hex(42)[2:]
+'2a'
+>>> int("2a", base = 16)
+42
+>>> int("0b111000", base=2)
+56
+~~~
+
+### Date and Time
+
+date
+
+- year
+- month
+- day
+
+time
+
+- hour
+- minute
+- second
+- microsecond
+
+datetime
+
+- date
+	- year
+	- month
+	- day
+- time 
+	- hour
+	- minute
+	- second
+	- microsecond
+
+isoweek() starts at 1 : Monday, 2 : Tuesday ...
+
+weekday() strat at 0 : Monday, 1 : Tuesday
+
+
+~~~ python
+>>> import datetime
+>>> datetime.date(2014, 1, 6)
+datetime.date(2014, 1, 6)
+>>> datetime.date(year=2014, month=1, day=6)
+datetime.date(2014, 1, 6)
+>>> d = datetime.date.today()
+datetime.date(2014,2, 27)
+>>> d.year
+2014
+>>> d.weekday()
+3
+>>> d.isoweekday()
+4
+>>> d.isoformat()
+2014-02-27
+~~~
+
+~~~ python
+d.strfttime()
+
+>>> d.strfttime('%A %d %B %Y')
+'Thursday 27 February 2015'
+>>> "{date:%A} {date.day} {date:%B} {date.year}".format(date=d)
+'Monday 6 January 2015'
+~~~
+
+~~~ python
+>>> t = datetime.time(hour=23, minute=59, second=59, microsecond=99999)
+>>> t.hour
+23
+>>> t.microsecon
+99999
+>>> "{t.hour}h{t.minute}m{t.second}s".format(t=t)
+'23h59m59s'
+~~~
+
+~~~ python
+>>> import datetime as dt
+>>> dt.datetime(2003, 5, 12, 14, 33, 22, 245323)
+datetime.datetime(2003, 5, 12, 14, 33, 22 , 245323) 
+>>> d = dt.date.today()
+>>> t = dt.time(8, 15)
+>>> dt.datetime.combine(d,t)
+dt.datetime(2014, 2, 27, 8, 15)
+~~~
+
+... etc
+---
 
 
