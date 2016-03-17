@@ -50,6 +50,7 @@ if(singletonRuntime == anotherInstance) {
 
 
 ### Create Singleton
+
 ### Demonstrate only one instance created
 
 ~~~ java
@@ -486,6 +487,135 @@ public static void main(String[] args) {
 - Concrete instance
 - Fresh Instance
 
+---
+
+#Factory
+
+- opposite of singleton
+- does not expose instantiation logic
+- defer to subclasses
+- common interface
+- specified by architecture, implemented by user
+- example
+	- Calendar
+	- ResourceBundle
+	- NumberFormat
+
+
+### Design
+- factory is responsible for lifecycle
+- concrete classes
+- parameterized create method
+
+~~~ java
+Calendar cal = calendar.getInstance();
+System.out.println(cal);
+System.out.println(cal.get(Calendar.DAY_OF_MONTH));
+~~~
+
+### Exmaple
+
+Website generators
+
+~~~ java
+Page.java
+publc abstract class Page {
+
+}
+
+CartPage.java
+public class CartPage extends Page {
+
+}
+
+//various other Pages.java
+
+Website.java
+public abstract class Website {
+
+	protected list<Page> pages = new ArrayList<>();
+	
+	public List<Page> getPages() {}
+	
+	public WebSite() {
+		this.createWebsite();
+	}
+	
+	public abstract void createWebsite();
+}
+
+Blog.java
+public class Blog extends Website {
+
+	@Override
+	public void createWebsite() {
+		pages.add(new PostPage());
+		pages.add(new AboutPage());
+		pages.add(new CommentPage());
+		pages.add(new ContactPage());
+	}
+}
+
+Shop.java
+public class Shop extends Website {
+
+	@Override
+	public void createWebsite() {
+		pages.add(new ShopPage());
+		pages.add(new ItemPage());
+		pages.add(new SearchPage());
+	}
+}
+
+
+//Creating enum for the type of object is a good idea
+public enum WebsiteType {
+	BLOG,SHOP
+}
+
+WebsiteFactory.java
+public class WebsiteFactory {
+
+	public static Website getWebsite(WebsiteType siteType) {
+		switch(siteType) {
+			case BLOG : {
+				return new Blog();
+			}
+			
+			case SHOP : {
+				return new Shop();
+			}
+			
+			default: {
+				return null;
+			}
+		}
+	}
+}
+~~~
+
+### Pitfall
+
+- complexity
+- creation in subclass
+- refactoring
+
+###Contrast
+
+Singleton
+
+- returns same instance
+	- one constructor method - no args
+- no interface
+- no subclasses
+
+Factory
+
+- returns various instances
+	- multiple constructors
+- interface driven
+- subclasses
+- adaptable to environment more easily
 
 ---
 
