@@ -619,7 +619,107 @@ Factory
 
 ---
 
+#AbstractFactory
 
+- factory of factories
+- factory of related objects
+- common interface
+- defer to sublcasses
+- example:
+	- DocumentBuilder
+	- Frameworks
+
+## Design
+
+- Groups factories together
+- factory is responsible for lifecycle
+- common interface
+- parameterized created method
+- ####composition
+
+~~~ java
+DocumentBuilderFactory abstractFactory = DocumentBuilderFactory.newInstance();
+DocumentBuilder factory = abstractFactory.newDocumentBuilder()
+Document doc = factory.parse(bais);
+~~~
+
+## Exercise
+
+~~~ java
+public abstract class CreditCardFactory {
+	
+	public static CreditCardFactory getCreditCardFactory(int creditScore) {
+		if(creditScore > 650) {
+			return new AmexFactory();
+		}
+		else {
+			return new VisaFactory();
+		}
+	}
+	
+	public abstract CreditCard getCreditCard(CardType);
+	
+	public abstract Validator getValidator(CardType cardType);
+}
+
+//VisaFactory.java
+public class VisaFactory extends CreditCardFactory {
+	@Override
+	public CreditCard getCreditCard(CardType cardType) {
+		switch(cardType) {
+			case GOLD:
+				return new VisaGoldCreditCard();
+			case PLATINUM:
+				return new VisaPlatCreditCard();
+				
+			default:
+				break;
+		}
+		
+		return null;
+	}	
+	
+	@Override
+	public Validator getValidator(CardType cardType) {
+		
+		switch(cardType) {
+			case GOLD:
+				return new VisaGoldValidator();
+			case PLATINUM:
+				return new VisaPlatValidator();
+		}
+	
+		return new VisaValidator();
+	}	
+}
+
+~~~
+
+## Pitfall
+
+- Complexity
+- Runtime switch
+- Pattern within a patern
+- Problem specific
+- Starts as a Factory
+
+## Contrast
+
+###Factory
+
+- returns various instances
+	- multiple constructors
+- interface driven
+- adaptable to environment more easily
+
+###AbstractFactory
+
+- Implemented with a factory
+- hides the factory
+- abstracts environment
+- built through composition.
+
+---
 
 #Structural Design Pattern
 
