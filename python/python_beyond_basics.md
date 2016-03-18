@@ -1232,7 +1232,7 @@ d.strfttime()
 >>> t.hour
 23
 >>> t.microsecon
-99999
+99999 
 >>> "{t.hour}h{t.minute}m{t.second}s".format(t=t)
 '23h59m59s'
 ~~~
@@ -1249,5 +1249,83 @@ dt.datetime(2014, 2, 27, 8, 15)
 
 ... etc
 ---
+
+### Iterables and Iterations
+
+comprehension
+
+- short-hand syntax for creating collections and iterable objects
+- can use multiple input sequences and multiple if clauses
+
+~~~ python
+[(x, y) for x in range(5) for y in range(3)]
+
+# pretty much equivalent to...
+>>> opints = []
+>>> for x in range(5):
+... 	for y in range(3):
+...			points.append((x, y))
+~~~
+
+~~~ python
+values = [x / (x - y) 
+			for x in range(100)
+			if x > 50
+			for y in range(100)
+			if x - y != 0] 
+
+#equivalent
+values = []
+for x in range(100): 	
+	if x > 50:
+		for y in range(100):
+			if x - y != 0:
+				values.append(x / (x - y))
+~~~
+
+Comprehension can be nested inside other comprehension
+
+~~~ python
+vals = [[y * 3 for y in range(x)] for x in range(10)]
+
+outer = []
+for x in range(10):
+	inner = [] 
+	for y in range(x):
+		inner.append(y * 3)
+	outer.append(inner)
+~~~
+
+~~~ python
+>>> {x * y for x in range (10) for y in range(10)}
+>>> g = ((x * y) for x in range(10) for y in range(x))
+>>> type(g)
+<class 'generator'>
+~~~
+
+map()
+
+- apply a function to every element in a sequence, producing a new sequence
+- map is lazy - it only produces values as they're needed
+- can accept any number of input sequences
+- the number of input sequence must match the number of function arguments
+-  map(f, a, b, c)
+	- f(a, b, c) -> output
+	- will terminate when any of yhe sequence terminate.
+
+either map() or comprehension is better than one another if the result is the same
+
+filer()
+
+- filer(is_odd, [1, 2, 3, 4, 5]);
+
+~~~ python
+>>> positives = filter(lambda x: x > 0, [1, -5, 0, 6, -2, 8])
+>>> list(positives)
+[1, 6, 8] 
+~~~
+
+- passing None as the first argument will filter out any false-y values
+
 
 

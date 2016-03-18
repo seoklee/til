@@ -83,7 +83,7 @@ $ tmux rename-window (prefix + ,)
 
 ----
 
-splits the window into two vertical panes
+splits the window into two horizontal panes
 
 ~~~
 $ tmux split-window (prefix + ")
@@ -91,7 +91,7 @@ $ tmux split-window (prefix + ")
 
 ----
 
-splits the window into two horizontal panes
+`splits the window into two vertical panes
 
 ~~~
 $ tmux split-window -h (prefix + %)
