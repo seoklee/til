@@ -1327,5 +1327,60 @@ filer()
 
 - passing None as the first argument will filter out any false-y values
 
+#### in python 2 actually eagerly evaluate map and filter
+
+functools.reduce() (aka fold and accumulate)
+
+- repeatedly apply a function to the elements of a sequence, reducing them to a single value.
+
+~~~ python
+>>> from functools import reduce
+>>> import operator
+>>> reduce(operator.add, [1,2,3,4,5])
+15
+~~~
+
+- if seqeunce length is one, the value just returns
+- optional initial value is conceptually just added to the start of the input sequence
+
+~~~ python
+>>> values = [1, 2, 3]
+>>> reduce(operator.add, values, 0)
+6
+>>> values = []
+>>> reduce(operator.add, values, 0) #avoids error
+0
+>>> values = [1, 2, 3]
+>>> reduce(operator.add, values, 0)
+0
+~~~
+
+Iteration
+
+- iters()
+	- create an iterator
+- next()
+	- get next element in sequence
+- StopIteration
+	- signal the end of the sequence
+
+iterable
+
+- an object which implements the __iter__() method
+- The alternative iterable protocol works with any object that support consecutive integer indexing via __getitem__()
+
+iterator
+
+- an object which implements the iterable protocol
+- and which implements the __next__() method
 
 
+Extended form of iter
+
+iter(callable, sentinel)
+
+- callable : callable object that takes zero arguments
+- sentinel : iterations stops when callable produces this value
+- often used for creating infinite sequences from existing functions
+	- ex: 
+		- read a file until you see a specific line.
