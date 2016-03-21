@@ -1384,3 +1384,103 @@ iter(callable, sentinel)
 - often used for creating infinite sequences from existing functions
 	- ex: 
 		- read a file until you see a specific line.
+
+---
+
+### Inheritance
+
+- subclasses will want to initialize base classes
+- base class initializer will only be called automatically if subclass initializer is undefined. 
+- super() to used access base-class implementation
+
+isinstance()
+
+- determines if an object is of a specified type
+
+~~~ python
+>>> isinstance(3, int)
+True
+>>> x = []
+>>> isinstance(3, (float, list, int))
+>>> True
+~~~
+
+issubclass()
+
+- determines if one type is a subclass of another
+
+multiple inheritance
+
+- defining a class with more than one base class
+
+~~~ python
+class SubClasss(base1, base2 ...)
+~~~
+
+- without conflict, names resolve in the obvious way.
+- Method Resolution Order determines name lookup in all cases
+
+if a class...
+
+- has multiple base classes
+- defines no initlizer
+
+then only the initalizer of the first base class is automatically called.
+
+__bases__ 
+
+- a tuple of base classes
+
+method resolution order (MRO)
+
+- ordering that determines method name lookup
+- methods may be defined in multple places
+- ordering of the inhertiance graph
+- __mro__ (as tuple) mro() (as list)
+	- check the order of the method in the mro. If there is, you call that method
+	 
+C3 algorithm for calculating MRO in Python
+
+- subclasses come before base classes
+- base class order from class definition is preserved
+- first two qualities are preserved no matter where you start in the inheritance graph
+
+~~~ python
+class A:
+
+class B(A):
+	pass
+
+class C(A):
+	pass
+
+class D(B, A, C):
+	pass
+	
+ERROR
+~~~
+
+super()
+
+- given a class resolution order and a class C, super() gives you an object which resolves methods using only the part of the MRO which comes after C
+- returns a proxy object which routes method calls
+	- bound proxy
+		- bound to a specific class or instance
+		- two types of bound proxies
+			- instance-bound
+				- super(class, instance-of-class)
+					- finds the MRO for the type of the second argument
+					- finds the location of the first argument in the MRO
+					- uses everything after that for resolving methods 
+			- class-bound
+				- super(base-calss, derived-class)
+					- python finds MRO for derived-class
+					- then finds base-class in that MRO
+					- it takes everything after base-class in the MRO, and finds the first class in that sequence with a matching method name
+	- unbound proxy
+		- not bound to a class or instance
+- without argument?
+	- instance method
+		- super(class-of-method, self)
+	- class method
+		- super(class-of-method, class)
