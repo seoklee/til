@@ -489,7 +489,7 @@ False
 >>> a[1]
 [3,4, 100]
 >>> b[1]
-[3,5, 100]
+[3,4]
 ~~~
 
 - repetition w/ * operator
@@ -500,7 +500,7 @@ False
 >>> l = l * 5
 >>> l[0].append(4)
 >>> l
-[ [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3], [1, 2, 3] ]
+[ [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4] ]
 ~~~
 
 - index will find the value in the array and return the index in the arr
@@ -724,7 +724,7 @@ Seems weird that it raises an exception. But the language design allowed it. Det
 generator
 
 - specify iterable sequences
-- ####lazily evaluated
+- lazily evaluated
 	- next value in the sequence is computed on demand
 - cam model infinite sequence
 	- streams of data with no definite end
@@ -1070,3 +1070,4 @@ setup(
 ~~~
 (venv) $ python setup.py sdist --format zip
 ~~~
+ 
