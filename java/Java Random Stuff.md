@@ -39,7 +39,7 @@ private String getTextFromFile()
 		bReader = new BufferedReader(reader);
 	
 		string line;	
-		while(( line = bReader.redline() ) != null)
+		while(( line = bReader.readline() ) != null)
 		{
 			allText += line + "\n";
 		}
@@ -83,4 +83,54 @@ public void outputPage(int pageNubmer)
 		}
 	}
 }	
+
+//Stream, wrap around reader like BufferedReader. You can also wrap a BufferedReader
+CapitalizationReader extends BufferedReader {
+
+	public CapitalizationReader(Reader in) 
+	{
+		super(in);
+	}
+	
+	@Override
+	public void readLine() throws IOException {
+		string line = super.readline();
+		if(line != null) 
+			return line.toUpperCase();
+			
+		return null;
+	}
+
+}
 ~~~
+
+File manipulation
+
+- Path class
+
+~~~ java
+Path path = Paths.get("~/home/lee/hi.txt");
+
+//kinda like touch command in linux
+try {
+	Files.createFile(path);
+} catch (IOException e) {
+	e.printStackTrace();
+}
+
+try {
+	Files.deleteIfExists(path);
+	// this will throw an excption if file does not exists
+	//Files.delete(path)
+	
+} catch (IOException e) {
+	e.printStackTrace();
+}
+
+try {
+	Files.move(path, Paths.get("~/home/");
+} catch (IOException e) {
+	e.printStackTrace()
+}
+~~~
+
