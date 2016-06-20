@@ -115,3 +115,59 @@ def correlation(x, y):
 	else:
 		return 0
 ~~~
+
+#### Simpson's Paradox
+
+correlations can be misleading when confounding variables are ignored. Correlation is measuring the relationship between your two variables all else being equal.
+
+remember. Causastion != correlattion
+
+to feel assured about casualty, conduct randomized trials. Get two group sof similar semographics a different experience.
+
+---
+
+### Probability
+
+if two events, E and F, are indepenedent. The probability of both events happening is
+
+~~~
+P(E, F) = P(E)P(F)
+~~~
+
+If E and F are not necessarily independent. Then we define the probability of E "conditional on F" as
+
+~~~
+P(E|F) = P(E,F)/P(F)
+
+or
+
+P(E,F) = P(E|F) P(F)
+~~~
+
+if they are independent
+
+~~~
+P(E|F) = P(E)
+~~~
+
+
+#### Bayes's Theorem
+
+~~~
+P(E|F) = P(E,F)/P(F) = P(F|E) P(E) / P(F)
+
+P(F) = P(F,E) + P(F, !E)
+
+so...
+
+P(E|F) = P(F|E) P(E) / [P(F|E)P(E) + P(F|!E)P(!E)]
+~~~
+
+- ex.
+	- disease affect 1 in every 10,000 people. correct result at 99%
+	- given P(D) is you have a disease and P(T) is positive
+	- P(D|T) = P(T|D) P(D) / (P(T|D)P(D) + P(T|!D)P(!D))
+		- = .99 * .0001 / ( .99 * .0001 + .01 * .9999)
+	- P(D|T) = .98 %
+	- if you have one million people. You can expect 100 of them to have the disease, and 99 of those 100 to the test positive. 
+	- 

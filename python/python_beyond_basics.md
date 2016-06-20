@@ -191,7 +191,7 @@ Extended actual argument syntax
 11
 12
 (13, 14)
->>> def color(red, green, blue, **kwargs(:
+>>> def color(red, green, blue, **kwargs):
 ...		print("r =", red)
 ...		print("g =", green)
 ...		print("b =", blue)
@@ -240,7 +240,7 @@ def sort_by_last_letter(string):
 ~~~ python
 >>> def enclosing()
 ... 	def local_func():
-...			print('ocal func')
+...			print('local func')
 ...		return local_func
 ...
 >>> lf = enclosing()

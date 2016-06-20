@@ -577,7 +577,7 @@ Protocol
 - to implement protocol, must support certain operations
 	- most collections implement container, sized, and iterable
 		-  container : in & not int
-		-  sized : len
+		-  sized : the
 		-  iterable : can produce iterator with iter(s)
 		-  sequence : retrieve elements by index. find items by value. count items. produce a reversed sequence
 - all except set and dict are sequences
@@ -1041,7 +1041,7 @@ $ python3 -m pdb palindrome.py
 ~~~
 
 #### Packaging
-
+I
 - write setup.py
 
 ~~~ python 
