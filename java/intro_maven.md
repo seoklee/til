@@ -267,4 +267,71 @@ pom.xml
 </project>
 ~~~
 
+## Maven Repositories
+
+### Local Repo
+
+- Where Maven stores everything it donwloads
+	- usually ~/.m2
+- Stores artifacts using the info that you provided for artifactId, groupId, and version
+	- Thus avoids duplicaition by copying it in every project and storing it in your SCM
+
+### Repositories
+
+- Simply just a http accesible location that you download files from
+- Super pom.xml
+	- Deafult with the Maven installation
+- Default location
+	- http://repo.maven.apache.org/maven2
+- Multiple repos allowed
+
+### Dependency Repos
+
+- Where we download all of our dependencies from
+	- Can contain releases and/or snapshots
+	- Not uncommon to have them in separate repos
+- How do we specify own repos
+
+
+~~~
+<dependencies>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-core</artifactId>
+		<version>3.2.0.BUILD-SNAPSHOT</version>
+	</dependency>
+<dependencies>
+
+//Errors out, becuase repo is not added
+<repositories>
+	<repository>
+		<id>spring-snapshot</id>
+		<name>Spring Maven SNAPSHOT Repository</name>
+		<url>http://repo.springsource.org/libs-snapshot</url>
+		<snapshots>
+			<enabled>true</enabled>
+		</snapshots>
+		<releases>
+			<enabled>true</enabled>
+		</releases>
+	</repository>
+</repositories>
+~~~
+
+### Plugin Repos
+
+- Just deals with Plugins
+- will only look for Plugins, by design usually a separate repo
+- different XML tag, <pluginRepositories>
+
+### Releases / Snapshots
+
+- Snapshots and releases can com from the same repo
+- Should not upload everything to the central repo, (snapshot in different repo, usually)
+	- Snapshots
+	- Milestones
+	- Release Candidate
+	- Release policies
+
+
 If you have noticed, even though you only pulled 3 dependencies, you have a ton of dependencies in your IDE due to the transitive dependency. It even solved the conflict.
