@@ -157,7 +157,7 @@ public class DbSingleton {
 
 ---
 
-##Builter Pattern
+##Builder Pattern
 
 - Handles a complex constructor
 	- large amount of parameters

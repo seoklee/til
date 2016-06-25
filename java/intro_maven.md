@@ -335,3 +335,123 @@ pom.xml
 
 
 If you have noticed, even though you only pulled 3 dependencies, you have a ton of dependencies in your IDE due to the transitive dependency. It even solved the conflict.
+
+## Maven Plugins
+
+### Goals
+
+- The default goals are plugins configured in the maven install
+	- clean, compile, test, package, install, deploy
+- super pom has these goals defined in it, which are added to your effective pom:
+
+~~~ 
+<plugin>
+	<artifactId>maven-clean-plugin</artifactId>
+	<version>2.4.1</version>
+	<executions>
+		<execution>
+			<id>default-clean</id>
+			<phase>clean</phase>
+			<goals>
+				<goal>clean</goal>
+			</goals>
+		</execution>
+	</executions>
+</plugin>
+~~~
+
+- goals are tied to a phase
+
+### Phases
+
+- validate
+	- validate the project is correct and all necesaary info is available.
+- compile
+	- compile source
+- test
+	- test the compiled source code
+- package
+	- packages the code in its defined package, such as JAR
+- deploy
+	- copy final package to a remote repo
+
+### Compiler Plugin
+
+- used to compile code and test code
+- invokes Javac, but with the classpath set from the dependencies.
+- Defaults to Java 1.5 regardless of what JDK is installed
+- Configuration section allows customization
+
+~~~ 
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<version>2.5.1</version>
+	<configuration>
+		<fork>true</fork>
+		<meninitial>128m</meminitial>
+		<maxmem>512m</maxmem>
+		<source>1.7</source>
+		<target>1.7</target>
+</plugin>
+~~~ 
+
+~~~
+<build>
+	<plugins>
+		<plugin>
+			...
+		</plugin>
+	</plugins>
+</build>
+~~~
+
+### jar plugin
+
+- used to package code into a jar
+- tied to the package phase
+- config section allows customization
+	- includes/excludes
+	- manifest
+
+~~~
+<build>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupid>
+			<artifactId>maven-jar-plugin</artifactId>
+			<version>2.4</version>
+			<configuration>
+				<useDefaultManifestFile>true</useDefaultManifestFile>
+
+			</configuration>
+		</plugin>
+	</plugins>
+</build>
+~~~
+
+### source plugin
+
+- used to attach source code to a jar
+- tied to the package phase
+	- often overriden to a later phase
+
+~~~
+	<plugin>
+	...
+		<executions>
+			<id>attach-sources</id>
+			<phase>verify</phase>
+			<goals>
+				<goal>jar</goals>
+			</goals>
+		</executions>
+	</plugin>
+~~~
+
+### javadoc plugin
+
+- used to attach javadocs to a jar
+- tied to the package phase
+	- often overriden to a later phase
+- usually just use the defaults, but many customizaion options for Javadoc format.

@@ -691,3 +691,163 @@ public class TrackingServiceTheories {
 
 That Assume.assumeTrue will ignore any points that does not meet the condition.
 
+## Integrating JUnit
+
+JUnit has alternative runners that is suited for automated testing.
+
+~~~ java
+public class ConsoleRunner {
+	public static void main(String arg[]) {
+	
+		JUnitCore junit = new JUnitCore();
+		junit.addListener(new TextListener(System.out));
+		
+		junit.run(TrackingServiceTest.class);
+	}
+}
+~~~
+
+#### Skipping Ant section.
+
+## JUnit and Maven
+
+Eclipse -> project -> convert to maven project
+
+Maven, though expects a specific directory structure.
+
+- /src/tests/java/*.java
+
+But if you modify pom.xml with <testSourceDirectory>. Also Maven looks for *Test.java for a test.
+
+## Code Coverage
+
+How much your code is evoked during the unit testing.
+
+- Use EclEmma
+- Use Cobertuna
+
+## Beyond JUnit
+
+How do we test code with dependencies?
+
+### Continuous Testing
+
+Modify Source -> Run Tests -> Modify Source -> Run Tests...
+
+Monitor source codes when changes and run JUnit tests.
+
+- Using Infinitest 
+
+### Dependencies
+
+Use stubs, which is a code that pretends to be a dependency that SUT is using. Usually in Java, a stub is created by creating an interface that represents dependency. Then stub is created by implementing that interface.
+
+~~~ java 
+public class TrackingService {
+	...
+	private Notifier notifier;
+	
+	public TrackingService(Notifier notifier) {
+		this.notifier = notifier;
+	}
+	
+	public void addProtein(int amount) {
+		total += amount;
+		history.add(new HistoryItem(historyId++, amount, "add", total));
+		
+		if(total > goal)
+		{
+			boolean sendResult = notifier.send("goal met");
+			String historyMessage = "sent:goal met";
+			if(!sendResult)
+				historyMessage = "send_error:goal met";
+			history.add(new HistoryItem(historyId++, 0, historyMessage, total));
+		}
+	}
+}
+
+public interface Notifier {
+	boolean send();
+
+}
+~~~ 
+
+Now you have a dependency that you have no control of. How do you test?
+
+~~~ java
+public class NotifierStub implements Notifier {
+	
+	@Override
+	public boolean send(String message) {
+		return true;
+	}
+}
+
+public class ParameterizedTests {
+	public static TrackingService service = new TrackingService(new NotifierStub());
+	
+	@Test
+	public void WhenGoalIsMetHistoryIsUpdated() throws InvalidGoalException
+	{
+		service.setGoal(5);
+		service.addProtein(6);
+		
+		HistoryItem result = service.getHistory().get(1);
+		assertEquals("sent:goal met", result.getOperation());
+	}
+}
+~~~
+
+### Mock
+
+It will be useful if SUT behaves a certain way only (calls certain method only, etc). Mocking is now useful. A mock object acts like a dependencies and records all the calls made to it. Also it can be configured to only return certain data.
+
+- Use JMock or other Mocking libraries
+
+~~~ java
+public class ParameterizedTests {	
+	@Test
+	public void WhenGoalIsMetHistoryIsUpdated() throws InvalidGoalException
+	{
+		Mockery context = new Mockery();
+		final Notifier mockNotifier = context.mock(Notifier.class);
+		service = new TrackingService (mockNotifier);
+		
+		context.checking(new Expectation() {{ 
+			oneOf(mockNotifier).send("goal met");
+			will(returnValue(true));
+		}}};
+		
+		service.setGoal(5);
+		service.addProtein(6);
+		
+		HistoryItem result = service.getHistory().get(1);
+		assertEquals("sent:goal met", result.getOperation());
+		
+		context.assertIsSatisfied();
+	}
+}
+~~~
+
+### Integration Testing
+
+JUnit can also integration testing!
+
+We want to now use the dependency
+
+### Selenium
+
+Does automated test. Works well with JUnit
+
+~~~ java
+public class SeleniumTests {
+	@Test
+	public void CanOpenGoolge() {
+		WebDriver driver = new FireFoxDriver()
+		driver.get("http://google.com");
+		WebElement searchBox = driver.findElement(By.name("q"));
+		serachBox.sendKeys("Pluralsight);
+		searchBox.submit();
+	}
+}
+~~~
