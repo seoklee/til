@@ -138,8 +138,29 @@ public interface Function<T, R > {
 public interface Comparator<T> {
   public int compare(T t1, T t2) ;
 
-  public static Comparator<Person> comparing(Function<Person, Integer> f) {
-    return (p1, p2) -> f.apply(p1) - f.apply(p2);
+  //original
+  // public static Comparator<Person> comparing(Function<Person, Integer> f) {
+  //   return (p1, p2) -> f.apply(p1) - f.apply(p2);
+  // }
+
+  //below function does not compile, because it is identifcal to the function above.
+  //param is the same to the above function!
+  // public static Comparator<Person> comparing(Function<Person, String> f) {
+  //   return (p1, p2) -> -1
+  // }
+
+  //Change it to this
+  // public static Comparator<Person> comparing(Function<Person, Comparable> f) {
+  //   return (p1, p2) -> f.apply(p1).compareTo(f2.apply(p2));
+  // }
+
+  public default Comparator<T> thenComparing(Comparator<T> cmp) {
+    return (p1, p2) -> compare(p1, p2) == 0 ? cmp.compare(p1, p2) : cmpare(p1, p2);
+  }
+
+  //One step further
+  public static Comparator<U> comparing(Function<U, Comparable> f) {
+    return (p1, p2) -> f.apply(p1).compareTo(f2.apply(p2));
   }
 }
 
@@ -153,12 +174,14 @@ public class MainComparator {
     Function<Person, String> f2 = p ->p.getLastName();
     Function<Person, String> f3 = p ->p.getFirstName();
 
-    Comparator<Person> cmpPerson = Compartor.comparing(f1);
+    // Comparator<Person> cmpPerson = Compartor.comparing(f1);
     //or
     Comparator<Person> cmpPerson = Compartor.comparing(p -> p.getAge());
     //or
-    Comparator<Person> cmpPerson = Compartor.comparing(p -> Person::getAge);
-  }
+    Comparator<Person> cmpPersonAge = Compartor.comparing(p -> Person::getAge);
+    Comparator<Person> cmpPersonLastName = Comparator.comparing(Person::getLastName);
 
+    Comparator<Person> cmp = cmpPersonAge.thenComparing(cmpPersonLastName);
+  }
 }
 ~~~
