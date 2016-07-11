@@ -325,4 +325,75 @@ if you specify the format. That will be should be the final format. If your prog
 
 Cloneable returns a field by field copy of the object if a class implements clonable or throws CloneNotSupportedException. That normal behaviour is probably not what one wants.
 
+---
+Few contracts from java documentation is...
 
+1.
+~~~ java
+x.clone() != x
+~~~
+
+2.
+~~~ java
+x.clone().getClass() != x.getClass()
+~~~
+
+3.
+~~~ java
+//this is not an absolute requirement
+x.clone().equals(x)
+~~~
+
+4.  No Constructors are called.
+
+---
+
+No constructors are called is too strong. 
+A well-behaved clone method can call constructors to create 
+objects internal to the clone under construction.
+
+If you override the clone method in a nonfinal class, you should
+return an object obtained by invoking super.clone. If this is all implemented
+the right way, it will bubble up to the Object's clone method.
+
+In practice, a class that implements Cloneable is expected to provide a properly
+functioning public clone method.
+
+In effect, the clone method functions as another constructor; you must ensure
+that it does no harm to the original object and that it properly establishes
+invariants on the clone.
+
+The clone architecture is incompatible with normal use of final fields referring
+to mutable objects.
+
+you are better off providing an alternative means of object copying, or simply not
+providing the capability
+
+A fine approach to object copying is to provide a copy constructor or copy factory
+
+---
+
+## Consider implementing comparable
+
+Just makes stuff so much easier. You can then use methods such as Arrays.sort() and
+maybe just put stuff on TreeSet.
+
+CompareTo similar to equals and have a same caveat with equals. It become hard
+to compare two similar differently typed object.
+
+Pro-tip? Write another unrelated class containing an instance of the first class
+and provide a "view" method that returns this instance (same advice as in the
+equals method)
+
+Sorted collections use compareTo instead of .equals()
+
+no need to type check. if you give it a wrong type, it will not compile.
+
+compare integral primitive fields using the relational operator < and >. For
+floating-point fields, use Double.compare or Float.compare in place of the relational
+operator.
+
+if class has multiple significant fields, order them as how critical they are.
+
+you can use subtraction and check sign only for cleaner code. This only works for
+smaller value. If this goes over 2^31, don't use it.
