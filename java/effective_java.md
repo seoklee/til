@@ -160,6 +160,7 @@ public class Person {
   }
 }
 ~~~
+
 - in this case, prefer primitive over boxed primitives.
 - you can avoid object creation if the object is extremely heavyweight (i.e.
 db connection)
@@ -366,10 +367,9 @@ invariants on the clone.
 The clone architecture is incompatible with normal use of final fields referring
 to mutable objects.
 
-you are better off providing an alternative means of object copying, or simply not
-providing the capability
+#### you are better off providing an alternative means of object copying, or simply not providing the capability
 
-A fine approach to object copying is to provide a copy constructor or copy factory
+#### A fine approach to object copying is to provide a copy constructor or copy factory
 
 ---
 
@@ -397,3 +397,84 @@ if class has multiple significant fields, order them as how critical they are.
 
 you can use subtraction and check sign only for cleaner code. This only works for
 smaller value. If this goes over 2^31, don't use it.
+
+---
+
+## Minimize the accessibility of classes and members
+
+Well designed module hides all of its implementation details, cleanly separating its API from its implementation. (Encapsulation fam)
+
+##### make each class or member as inaccessible as possible.
+
+It's the interface itself that can be package-private, not the methods in it.
+
+If a package-private top-level class (or interface) is used by only one class, consider making the top-level class a private nested class of the sole class that uses it. 
+
+Instance fields should never be public. If an instance field is non-final, or is a final reference to a mutable objet, then by making the final public, you give up the ability to limit the values that can be stored in the field. 
+
+Classes with public mutable fields are not thread-safe even if a field is final and refers to an immutable object. By making the field public you give up the flexibility to switch to a new internal data representation in which the field does not exist.
+
+This applies to static variable, except static constants. Constants are allowed as long as it is a integral part of the abstraction provided by the class. (Capital letters and underscores in the names). These variables only contain primitive values or immutable objects. A final field containing a reference to a mutable object has all the disadvantages of a nonfinal field. (while the reference cannot be modified, the referenced object can be modified.)
+
+It is wrong for a class to have a public static final array field, or an accessor that returns such a field.
+
+~~~ java
+//potential security hole?
+public static final Thing[] VALUES = { ... } ;
+
+//to fix...
+private static final Thing[] PRIVATE_VALUES = { ... };
+public static final List<Thing> Values = 
+  Collections.unmodifiableList(Arrays.asList(PRIVATE_VALUES));
+
+//or
+public static final Thing[] values() {
+  return PRIVATE_VALUES.clone();
+}
+~~~
+
+----
+
+## In public classes, use accessor methods, not public fields.
+
+However if a class is package-private or is a private nested class, there is nothing inherently wrong iwth exposing its data fields.
+
+Even though it's never a good idea to expose public fields, if it does, it is less harmful when it's immutable.
+
+## Minimize Mutablility
+
+immutable objects = objects whose instances cannot be modified. All of the info contained in each instance is provided when it is created and is fixed for the lifetime of the object.
+
+Immutable objects are easier to design, implement, and use than mutable classes. They are inherently thread-safe, too.
+
+Follow these rules to make your object immutable
+
+1. Don't provide any methods that modify the object's state
+2. Ensure taht the class can't be extended. 
+  - Generally accomplished by making the class final.
+3. Make all fields final
+4. Make all fields private.
+  - While it is technically permissible for immutable classes to have public final fields containing primitive values or references to immtuable objects, it is not recommended becasue it precludes changing the internal representation in a later release.
+5. Ensure exclusive access to any mutable components.
+  - If your class has any fields that refer to mutable objects, ensure that clients of the class cannot obtain references to these objects. Never initialize such a field to a client-provided object reference or return the object reference from an accessor. Make defensive copies in constuuctors, accessors, and readObject methods.
+
+Static factories can be used to keep a cache of frequently used item if it is immutable. Reduces memory ootprint and GC costs.
+
+You never have to make defensive copies. No clone or copy constructor.
+
+You can also share their internals. (BigInteger with sign and magnitutde example)
+
+Immutable objects make great building blocks for other objects.
+
+The only real disadvantage is that immutable objects require a separate object for each distinct value. Could be a performacne issue. Also if an operation produces one object in final but produces numerous intermediate objects.. The solution is to use primitive at those multistep operation.
+
+if you cannot accuragtely predict which complex multistage operations clents will wnat to perform on your immutable class, provide a public mutable companion class. (Stringbuilder and String)
+
+If you want to force in-extendibility, you can use final keyword or make all of its contructors private or package-private and to add public static factories. It is flexible because it allows the use of multiple package-private implementation classes. This also adds more flexibility in terms of creating an object with different values because you can simply add another static factory method (i.e. complex number with polar coordinate).
+
+The rule, immutable classes should not have a methods that modify itself and all of its fields must be final, can be relaxed for a performance issue. In truth, no method may produce an externally visible change in the object's state. However, some immutable classes have one or more nonfinal fields in which thethey cache the results of expensive computations the first time they are needed.
+
+If immutable class implement Serializable and it contains one or more fields that refer to mutable objects, you must provide an explicit readObject or readResolve method. (or use the OjbectOutputStream.writeUnshared and ObjectInputStream.readUnshared methods, even if the default serialized form is acceptable.)
+
+##### Classes should be immutable unless there's a very good reason to make them mutable. If a class cannot be made immutable, limit its mutability as much as possible. Make every field final unless there is a compelling reason to make it nonfinal.
+
