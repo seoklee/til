@@ -103,7 +103,7 @@ public class HelloJUnitTest() {
 - @Before
 	- Some behaviour before test
 - @After
-	- Some behaviour before test
+	- Some behaviour after test
 - @BeforeClass
 	- Before any methods in the test class is executed
 - @AfterClass
