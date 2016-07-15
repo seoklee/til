@@ -551,7 +551,7 @@ super useful during funtional programnming.
 
 	// Customer who bought a carrot
 	static Optional<String> carrotCustomer() {
-		return findSaleOf("carrot).flatmap(sale -> sale.customer);
+		return findSaleOf("carrot").flatmap(sale -> sale.customer);
 	}
 
 	// store that sold a store
