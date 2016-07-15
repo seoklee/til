@@ -478,3 +478,62 @@ If immutable class implement Serializable and it contains one or more fields tha
 
 ##### Classes should be immutable unless there's a very good reason to make them mutable. If a class cannot be made immutable, limit its mutability as much as possible. Make every field final unless there is a compelling reason to make it nonfinal.
 
+## Favor composition over inheritance
+
+Inheritnace is safe to use within a package or when extending classes specifically designed and documented for extension. Extending across the package boundary can be dangerous
+
+Unlike method invocation, inheritance violates encapsulation. If you extend across the package and superclass functionality changes, your code breaks.
+
+Solution? give your new class a private field that references an instance of the existing class. (composition because the existing class becomes a component of the new one). Each instance method in the new class invokes the corresponding method on the contained instance of the existing class and returns the result. (This is called forwarding, and the methods in the new class are known as forwarding methods.)
+
+~~~ java
+//wrapper class - uses composition rather than inheritance
+public class InstrumentedSet<E> extends ForwardingSet<E> {
+  private int addCount = 0;
+
+  public InstrumentedSet(Set<E> s) {
+    super(s);
+  }
+
+  @Override public booldean add(E e) {
+    addCount++;
+    return super.add(e);
+  }
+  ...
+}
+
+//Reusable forwarding class
+public class ForwardingSet<E> Implements Set<E> {
+  private final Set<E> s;
+  public FowardingSet<E>(Set<E> s) { this.s = s; }
+
+  public void clear() {
+    s.clear();
+  }
+
+  public boolean add(E e) {
+    return s.add(e)
+  }
+  ...
+}
+~~~
+
+This is more flexible; any Set implementation and will work in conjunction with any preexisting constructor;
+
+~~~ java
+Set<Date> s = new InstrumentedSet<Date>(new TreeSet<Date>(cmp));
+Set<E> s2 = new InstrumentedSet<E>(new HashSet<E>(capacity));
+~~~
+
+InstrumentedSet class is known as a wrapper class because each InstrumentedSet instance contains another Set isntnace. This is also known as decorator pattern
+
+This is not suitable for a callback frameworks wherein objects pass self-references to other objects for subsequent invocations. Because a wrapped object does not know of its wrapper, it passes areference to self and callbacks elude the wrapper.
+
+Memory footprint impact and performance impact is minimal. It's tedious to write forwarding methods, but you have to write the forwarding class for each interface only once, and forwarding classes may be provided for you byu the package containing the interface.
+
+extend if and only if the relationship is 'is-a'
+
+if you use inheritnace where composition is appropriate, you needlessly expose implementation details, tying you to the original implementation. The client may be able to corrupt invariants of the subclass by modifying the superclass directly.
+
+Also think whether your superclass has flaws, if it does, it propagates the flaw to the subclasses using inheritance.
+
