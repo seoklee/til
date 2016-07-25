@@ -118,3 +118,13 @@ Environmental configuration
 
 First apply properties at application.properties, then overwrites based on the profiles accordingly.
 
+---
+
+#### Configuring/Accessing Data Source
+
+- JPA
+- Spring Data JPA
+    - Only needs to add Spring Data JPA on the pom file.
+
+- FlywayDB Migration (For DB Migration)
+
