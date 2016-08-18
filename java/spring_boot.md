@@ -128,3 +128,66 @@ First apply properties at application.properties, then overwrites based on the p
 
 - FlywayDB Migration (For DB Migration)
 
+---
+
+#### Testing
+
+Use mock framework for some depdendency
+
+~~~ java
+public class ShipwreckControllerTest {
+    @InjectMocks
+    private ShipwreckController sc;
+
+    @Mock
+    private ShipwreckRepository shipwreckRepository;
+
+    @Before
+    public void init() {
+        MockAnnotattions.initMocks(this);
+    }
+
+    @Test
+    public void testShipwreckGet {
+        Shipwreck sw = new Shipwreck();
+        sw.setId(1l);
+        when(shipwreckRepository.findOne(1L)).thenReturn(sw);
+
+        //verify(shipwreckRepository).findOne(1L);
+
+        Shipwreck wreck = sc.get(1L);
+    }
+}
+~~~
+
+#### Integration Test
+
+- Spring Apps..
+    - containers are difficult to test
+    - Spring Context needs to be available
+    - App/Test startup can be slow
+    - DB state needs to be consistent
+
+- Spring Boot Apps
+    - No container, eaiser to start app
+    - Spring Context auto configuration
+    - App/Test startup can be slow
+    - DB needs to be consistent
+
+@RunWith(SpringJUnit4ClassRunner.class)
+
+@SpringApplicationConfiguration
+
+
+~~~ java
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(App.class)
+public class ShipwreckRepositoryIntegrationTest {
+
+    @Test
+    public void testFindAll() {
+        List<Shipwreck> wrecks = shipwreckRepository.findAll();
+        asserThat(wrecks.size(), is(greaterThanOrEqualTo(0)));
+    }
+}
+~~~
