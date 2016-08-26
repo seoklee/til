@@ -93,7 +93,7 @@ public class Elvis {
 public enum Elvis{
   INSTANCE;
 
-  public void leaveTheBuilding()
+  public void leaveTheBuilding() {}
 }
 ~~~
 
@@ -529,7 +529,7 @@ InstrumentedSet class is known as a wrapper class because each InstrumentedSet i
 
 This is not suitable for a callback frameworks wherein objects pass self-references to other objects for subsequent invocations. Because a wrapped object does not know of its wrapper, it passes areference to self and callbacks elude the wrapper.
 
-Memory footprint impact and performance impact is minimal. It's tedious to write forwarding methods, but you have to write the forwarding class for each interface only once, and forwarding classes may be provided for you byu the package containing the interface.
+Memory footprint impact and performance impact is minimal. It's tedious to write forwarding methods, but you have to write the forwarding class for each interface only once, and forwarding classes may be provided for you by the package containing the interface.
 
 extend if and only if the relationship is 'is-a'
 
@@ -537,3 +537,16 @@ if you use inheritnace where composition is appropriate, you needlessly expose i
 
 Also think whether your superclass has flaws, if it does, it propagates the flaw to the subclasses using inheritance.
 
+## Design and document for inheritance or else prohibits it
+
+the class must document precisely the effects of overriding any method. Meaning, class must document its self-use of overridable methods. (any circumstances under which it might invoke an oberridable method.)
+
+ allow programmers to write efficient subclasses without undue pain, a class may have to provide hooks into its internal workings in the form of judiciously chosen protected methods or, in rare instances, protected fields.
+
+The only way to test a class designed for inheritance is to write subclasses. If you omit a crucial protected member, trying to write a subclass will make the ommision painfully obvious. Conversely if several subclasses are written and non uses a protected member, you should probably make it private.
+
+Few more restrictions that a class must obey to allow inheritance.
+
+Constructors must not invoke overridable methods, directly or indirectly. The superclass constructor runs before the subclass constructor, so the overriding method in the subclass will get invoked before the subclass constructor has run. If the overriding method depends on any initaalization performed by the subclass constructor, the method will not behave as expected.
+
+neither clone nor readObject may invoke an overridable method, directly or indirectly (pg. 90)
