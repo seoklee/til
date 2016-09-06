@@ -549,4 +549,180 @@ Few more restrictions that a class must obey to allow inheritance.
 
 Constructors must not invoke overridable methods, directly or indirectly. The superclass constructor runs before the subclass constructor, so the overriding method in the subclass will get invoked before the subclass constructor has run. If the overriding method depends on any initaalization performed by the subclass constructor, the method will not behave as expected.
 
-neither clone nor readObject may invoke an overridable method, directly or indirectly (pg. 90)
+neither clone nor readObject may invoke an overridable method, directly or indirectly.
+
+Desigining a class for inheritance places substantial limitations on the class. Even just a simple class that were not meant to be inherited are inherited by clients anyway. When some changes are made, their subclasses break.
+
+The best solution to this problem is to prohibit subclassing in classes that are not designed and documented to be safely subclassed. (Declare class to be final or make all the constructors private or package private and and to add public static factories in place of the constructors)
+
+Wrapper classes are better anyway... (item 16)
+
+if your class a concrete without interface, then you can prohibit standard interface. ENSURE that the class never invokes any of its overridablew methods and to document this fact. Then it's reasonably safe to inherit.
+
+You can eliminate a class's self-use of overridable methods. MOve the body of each overridable method to a private "helper" method and have each overridable method invoke its private helper method. Then replace each self-use of an overriable method with a direct invocation of overridable method's private helper method.
+
+## Prefer interfaces to abstract classes
+
+Abstract class can have implementation but interface cannot. (not so true after Java 8!) You have to inherit abstract class to implement its functionality, and Java only allows single inheritance.
+
+Existing classes can be easily retrofitted to implement a new interface.
+
+Interfaces are ideal for defining mixins. Mixin is a type that a class can implement. 
+
+Interface tends to be more flexible due to its nonhierarchical nature when at use.
+
+Interfaces enable safe, powerful functionality enhancements via the wrapper class idiom. (described in item 16) Abstract class is forceful contract to use the inheritance, and it's more fragile and less powerful.
+
+You can combine the virtues of interfaces and abstract classes by providing an abstract skeletal implementation class to go with each nontrivial interface that you can export. The interface still defines the type but the skeletal implementation takes all of the work out of implementing it.
+
+By convention skeletal implementations are called AbstractX. (AbstractList, AbstractMap... etc)
+
+When properly designed, skeltal implementation cn make it very easy for programmers to provide their own implementations of your interfaces.
+
+~~~ java
+//concrete implementation built atop skeletal implementation
+static List<Integer> intArrayAsList(final int[] a) {
+  if (a == null)
+    throw new NullPointerException();
+
+    return new AbstractList<Integer>() {
+      public Integer get(int i) {
+        return a[i];
+      }
+
+      @Override
+      public Integer set(int i, Integer val) {
+        int oldVal = a[i];
+        a[i] = val;
+        return oldVal;
+      }
+
+      public int size() {
+        return a.length;
+      }
+    };
+}
+
+//pg .96 for real skeletal implementation
+~~~
+
+StackOverflow answer on this matter
+
+---
+The point of a "Skeletal class" as you put it is mainly to enforce certain ground rules that will govern the use of your design. By themselves, interfaces and abstract classes cannot do the job. Consider the interface for example
+
+You cannot specify any implementation details about your methods
+variables specified at interface level must be static.
+Interfaces cannot implement anything (class or interface)
+So this means that using an interface alone to specify the rules of a design will still permit abuse of the operations defined in your interface, you'll not be able to specify important class level variables or take full advantage of inheritance.
+
+Now take the abstract class
+
+Java does not support multiple inheritance, so deriving the benefits of multiple classes, abstract or otherwise is not possible
+You cannot derive the full benefit of polymorphism from an abstract class based design only as interfaces (to me) are at the top of the polymorphism tree
+Combining both gives you the best of both worlds in that
+
+An abstract class can implement an interface. An implementing class can extend your abstract class to derive the benefits of already implemented methods of the interface. And this chaining can go on for as many abstract classes as necessary, up till a concrete implementation
+An implementing class can implement as many interfaces as necessary for marker-type purposes. So you can have as many Serializable type interfaces for marking that will be extended by other interfaces
+A class implementing an abstract class (that implements an interface) can be defined as a type of the interface to benefit from better polymorphism while being instantiated as a child of the abstract class
+Consider this use case
+
+You have an interface that has about say, 6 methods that will govern the use of a class then you have a marker interface that you need simply for identification purposes, so you can use maybe instanceOf operator on.
+Now in that first interface, you need to enforce a specific implementation of just 3 of those methods, the remaining 3, you're going to leave to the end users of the class.
+So interface A has 6 method definitions, Interface B is just a marker for a class to say "I'm a type B class". Now you'll have class A, an abstract class, implement both interfaces A and B
+In your abstract class, you implement just the desired 3 methods, Then you leave the implementation details of the other 3 methods to the final consumers of that abstract class
+
+---
+
+Abstract class is a lot easier to evolve. If you want to stick something in for next version, just stick that code in with a reaonable default implementation. This doesn't work with interface, everything will break!
+
+Once an ingterface is released and widely implemented, it is almost impossible to change.
+
+If the project is evolving, abstract's non-flexibility might help.
+
+## Use interfaces only to define types.
+
+When a class implements an interface, the interface serves as a type that can be used to refer to instances of the class.
+
+The constant interface (interface without method, just constants to avoid the need to qualify constant tnames with a class name) is a poor use of interfaces. Implementing a constant interface causes this inplementation detail to leak into the class's exported API. It is of no consequence to the users of a class that the class implements a constant interface. 
+
+There are several options to export a constant. One can define constants in the class' class or interface itself. Or it could be an enum. Or it could be noninstantiable utility class.
+
+```
+public class PhysicalConstants {
+  private PhysicalConstants() {}
+
+  public static final double ...
+}
+```
+
+If one is using a heavy use of those constants, static import can be used to avoid typing the class name.
+
+## 20. Prefer class hierachies to tagged classes.
+
+A tagged class can be an instance that indicates flavors. It can be representing two states. For an example, a class capable of representing a circle or a rectangle.
+
+(pg. 100 for code)
+
+There are a lot of shortcoming to this.
+
+1. clutered with boilterplate, including enum declaration, tag fields, and switch statement
+2. readability
+3. memory footprint because of useless fields belong to other flavor.
+4. if you add more shapes. a lot of change of code.
+5. Fields can't be final unless constructor initialize irrelevant fields. (more boilerplate. If you mess up by initializing wrong field, your program will fail at runtime)
+
+Don't do it. It's not verbose, more error-prone, and inefficient.
+
+Do subtyping instead. A tagged class is just a pallid imitation of a class hierarchy. Define an abstract class containing an abstract method for each method in the tagged class whose behavior depends on the tag value. Methods that does not have dependency and flavor-independent fields should be placed onto that class.
+
+This practically fixes all the shortcoming of flavored classes. In addition to increased flexibility and better compile-type checking. (example 101-102)
+
+## 21. Use function objects to represent strategies
+
+**Java now has lambda. use it as strategy**
+
+Java doesn't have functor. But using object references, similiar thing can be achieved. 
+```
+class StringLengthComparator {
+  public int compare(String s1, String s2) {
+    return s1.length() - s2.length();
+  }
+}
+```
+
+This essentially acts as functor. Also, it will be invoked on any arbitrary pairs of string. This is a concrete strategy for string comparison. Since this is stateless and has no other attributes, this can be singleton also.
+
+Better, more flexible design would be to implement comaprator interface. So client can pass other comparison strategy.
+
+Anonymous class can be employed also. (USE LAMDA) Anoynmous function will create a new instance when it's called, so consider storing the function object in a private static final field and reusing it. (pg. 105 for code example)
+
+## Item 22. Favor static member classes over nonstatic.
+
+A nested class should exist only to serve its enclosing class. Otherwise, it would be a top-level class. There are four types of nested classes. _Static member classes_ , _nonstatic member classes_ , _anonymous classes_, and _local classes_.
+
+Static member class is the easieest. Beest thought as an ordinary class that ahppens to be declared inside another class and has access to all of the enclosing class's members, even those declared private. Static member class can be used as public helper class, useful only in conjunction with its outer class.
+
+Only difference between nonstatic member classes and static member classes is the modifier _static_. Nonstatic member class is associated with the _instance_ of the enclosing class. You can envoke method on the enclosing method, even obtain a reference to the enclosing instance using the qualified this construct. If an instance of a nested class should exist in isolation from an instance of its enclsing, then the nested class must be a static member class.
+
+One common case of nonstatic member class is to define an Adapter which allows an instance of the outer class to be viewed as an instance of some unrelated class. For an example, Map interface's collections views (i.e. Map's keySet, entrySet, and values )
+
+~~~ java
+public class MySet<E> extends AbstractSet<E> {
+  ...
+  public Iterator<E> iterator() {
+    return new MyIterator();
+  }
+
+  private class MyIterator implements Iterator<E>{
+    ...
+  }
+}
+~~~
+
+**If you declare a member class that DOES NOT require access to an enclosing instance, ALWAYS put the static modifier in its declaration** This does not grant the extraneous reference to its enclosing instance, which cost time and CAN RESULT IN ENCLSING INSTANCE BEING RETAINED WHEN IT WOULD OTHERWISE BE ELIGIBLE FOR GC.
+
+(pg. 107 quesiton what? Entry)
+
+
+(stopeed at pg 107)
