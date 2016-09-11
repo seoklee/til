@@ -702,8 +702,8 @@ Anonymous class can be employed also. (USE LAMDA) Anoynmous function will create
 A nested class should exist only to serve its enclosing class. Otherwise, it would be a top-level class. There are four types of nested classes. _Static member classes_ , _nonstatic member classes_ , _anonymous classes_, and _local classes_.
 
 Static member class is the easieest. Beest thought as an ordinary class that ahppens to be declared inside another class and has access to all of the enclosing class's members, even those declared private. Static member class can be used as public helper class, useful only in conjunction with its outer class.
-
-Only difference between nonstatic member classes and static member classes is the modifier _static_. Nonstatic member class is associated with the _instance_ of the enclosing class. You can envoke method on the enclosing method, even obtain a reference to the enclosing instance using the qualified this construct. If an instance of a nested class should exist in isolation from an instance of its enclsing, then the nested class must be a static member class.
+ 
+Nonstatic member class is associated with the _instance_ of the enclosing class. You can envoke method on the enclosing method, even obtain a reference to the enclosing instance using the qualified this construct. If an instance of a nested class should exist in isolation from an instance of its enclsing, then the nested class must be a static member class.
 
 One common case of nonstatic member class is to define an Adapter which allows an instance of the outer class to be viewed as an instance of some unrelated class. For an example, Map interface's collections views (i.e. Map's keySet, entrySet, and values )
 
@@ -722,7 +722,23 @@ public class MySet<E> extends AbstractSet<E> {
 
 **If you declare a member class that DOES NOT require access to an enclosing instance, ALWAYS put the static modifier in its declaration** This does not grant the extraneous reference to its enclosing instance, which cost time and CAN RESULT IN ENCLSING INSTANCE BEING RETAINED WHEN IT WOULD OTHERWISE BE ELIGIBLE FOR GC.
 
-(pg. 107 quesiton what? Entry)
+private static member classes is useful to represent components of the object 
+represented by their enclosing class.
 
+Annoymous classes have enclsing instances if and only if they occur in a nonstatic context; But if they occur in a static vontext, they cannot have any static members. There are many limitation of anonymous classes. 
 
-(stopeed at pg 107)
+- you can't instantiate them except at the point they are declared.
+- you can't perfom instanceof tests or do anything else that requires you to name the class.
+- you can't declare an anonymous class to implement multiple interfaes, or to extend a class and implement an interface at the same time.
+- lcients of an anoynmous class can't invoke any members except those it inherits from its supertype.
+
+Common use for anonymous class is creating function objects on the fly, (Comparator) or to create process object. (Runnable, Thread, or TimerTask)
+
+tldr : if nested class needs to be visible outside of a single method or is too long to fit comfortably inside a method use member class.
+
+- if needs reference to its enclosing instance, make it nonstatic.
+  - if not make static
+- if you need to create instances from only one locaiton and there is pre-existing type, use anonymous class
+  - if not use local class.
+
+  
