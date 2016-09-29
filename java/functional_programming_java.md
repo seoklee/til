@@ -29,7 +29,7 @@ Gain...
 - simpler
 - easy to add
 
- ~~~ java
+~~~ java
 @FunctionalInterface
 public interface FunctionOverTime {
   double valueAt(int time);
@@ -237,7 +237,7 @@ public CollectionsExample {
 	}
 
 
-	private staticv BinaryOperator<String> joinOn(String connector) {
+	private static BinaryOperator<String> joinOn(String connector) {
 		return (allSoFar, nextElement) ->
 				allSoFar + connector + nextElement;
 	}

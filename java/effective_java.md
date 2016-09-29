@@ -741,4 +741,81 @@ tldr : if nested class needs to be visible outside of a single method or is too 
 - if you need to create instances from only one locaiton and there is pre-existing type, use anonymous class
   - if not use local class.
 
-  
+Generic
+
+## Item 23
+
+Don't use raw type Generics. Type safety is important. Only time that you'd use this is to ensure backward compatibility. So don't use it when you are working on the new code.
+
+If you wnat to use a generic type but you don't know or care what the actual type parameter is, you cna use a question mark instead. 
+
+~~~ java
+//DONT DO THIS
+static int numElementsInCommon(Set s1, Set s2) {
+  int result = 0;
+  for (Object o1 : s1)
+    if (s2.contains(o1))
+      result++;
+    return result;
+}
+~~~
+ 
+~~~ java
+//DONT DO THIS
+static int numElementsInCommon(Set<?> s1, Set<?> s2) {
+  int result = 0;
+  for (Object o1 : s1)
+    if (s2.contains(o1))
+      result++;
+    return result;
+}
+~~~
+
+What's the difference? you can put anything on raw type, but wildcard allows only one unknown type. (other than null) If this is unacceptable restriction, use generic methods (item 27) or bounded wildcard types (item 28)
+
+Two minor exceptions arised from the fact that generic type info is erased runtime (item 25). YOU MUST USE RAW TYPES IN CLASS LITERALS. So, List.class, String[].class and int.class are all legal, but List<String>.class and List<?>.class are not.
+
+Since generic type is erased at runtime, it is illegal to use the instanceof operator on parameterized types other than unbounded wildcard types. The use of unbounded wildcard types in place of raw types does not affect the behavior of the instanceof operator in any way. In this case, the angle brackets and question marks are just noise. This is the preferred way to use the instanceof operator with generic types
+
+~~~ java
+if (o instanceOf Set) { //raw types
+  Set<?> m = (Set<?>) o; //wildcard
+}
+~~~
+
+once you realize that o is a set, you must cast it to the wildcard type Set<?>, not the raw type Set.
+
+## Item 24: Eliminate unchecked warnings
+
+**eliminate every unchecked warning that you can** If you eliminate all warnings, you are assured that your code is typesafe.
+
+**if you can't eliminate a warning, and you can prove that the code that provoked the warning is typesafe, then (and only then) suppress the warning with an @SuppressWarnings("unchecked") annotation. And always use that annotation on the smallest scope possible. Typically this will be a variable declaration or a very short method or constructor. Never use it for entire class.
+
+## Prefer lists to arrayzs
+
+Arrays are different from generic types in 2 important ways. 1) Arrays are covariant, meaning if Sub is a subtype of Super, then the array type Sub[] is a subtype of Super[]. 
+
+Generics, by constrast, are invariant. For 2 distinct types Type1 and Type2, List<Type1> is nether a subtype nor a superType of List<Type2>.
+
+~~~ java
+//Fails at runtime
+Object[] objectArray = new Long[1];
+objectArray[0] = "I don't fit in";
+~~~
+
+~~~ java
+//won't compile
+List<Object> o1 = new ArrayList<Long>();
+o1.add("I don't fit in");
+~~~
+
+Array fails at runtime, and the other fails at compile time, which is better.
+
+Arrays are reified, meaning that arrays know and enforce their element types at runtime. Generics are implemented by erasure, menas that they enforce their type constraints only at compile time and discard their element type info at runtime. Erasure is what allows generic types to interoperate freely with legacy code that does not use generics.
+
+Due to these differences, you can't make generic arrays. (List<E>[], new List<String>[], new E[] are all illegal)
+
+the explaination w/ code at 120~123.
+
+
+
