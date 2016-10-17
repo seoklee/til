@@ -7,7 +7,7 @@ When Java collects, it 'stops' the world. It stops every thread except the threa
 ###Pro tip
 
 - assigning a 'null' value to an object should not be a big deal. 
-- System.gc() is evil like goto command. Do not use it. 
+- System.gc() is evil like 'goto' command. Do not use it. 
 
 -------
 

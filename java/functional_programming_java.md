@@ -230,7 +230,7 @@ public CollectionsExample {
 	private static String summerize(final String[] descriptions) {
 
 		return Arrays.asList(descriptions).stream()
-						.filter(NOW_EMPTY)
+						.filter(NON_EMPTY)
 						.map(lastWord)
 						.reduce(joinOn(" & "))
 						.orElse("");
@@ -270,7 +270,7 @@ Stream is at least as efficient as the loop.
 ~~~ java
 private static String summerize(final String[] descriptions) {
 	return Arrays.asList(descriptions).stream()
-					.peek(s -> System.out.println("About to filter: ) + s)
+					.peek(s -> System.out.println("About to filter: ") + s)
 					.filter(NOW_EMPTY)
 					.peek(s -> System.out.println("About to map : " + s))
 					.map(lastWord)
@@ -300,7 +300,7 @@ iteration can also stop when it is told to.
 ~~~ java
 private static String summerize(final String[] descriptions) {
 	return Arrays.asList(descriptions).stream()
-					.peek(s -> System.out.println("About to filter: ) + s)
+					.peek(s -> System.out.println("About to filter: ") + s)
 					.filter(NOW_EMPTY)
 					.limit(3)
 					.peek(s -> System.out.println("About to map : " + s))
@@ -332,7 +332,6 @@ carrots & bananas & pumpkins.
 ~~~ java
 public class Sale {
 	...
-
 	public double total() {
 		return items.stream.mapToDouble(item -> item.price).sum()
 }
@@ -384,7 +383,7 @@ Terminal Operators
  
  Steram is kinda like iterator. it is only usable one time.
 
- ~~~ java
+~~~ java
 
  //COMPILER ERROR 
 
