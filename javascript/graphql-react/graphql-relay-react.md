@@ -281,6 +281,7 @@ variables: null
 You need a GraphQL Client that sits between a frontend framework (i.e. React) and GraphQL server. Frontend framework will handout query, and GraphQL client will make the query.
 
 3 Big Clients
+
 - Lokka
     - basic queries and mutations.
     - some simple caching
@@ -288,3 +289,22 @@ You need a GraphQL Client that sits between a frontend framework (i.e. React) an
     - Good balance between features and complexity
 - Relay
     - Amazing performance for mobile. But complex
+
+
+``` js
+import ApolloClient from 'apollo-client'
+import { ApolloProvider } from 'react-apollo'
+
+// empty client
+const client = new ApolloClient({});
+
+const Root = () => {
+  return (
+      <ApolloProvider client={client}>
+        <div>yolo<div/>
+      </ApolloProvider>
+  )
+};
+
+
+```
