@@ -1,0 +1,22 @@
+# Spark
+
+Driver
+    - distribute the work to the workers
+    - contains Spark Context
+        - Spark Context
+            - Task creator
+            - Scheduler
+            - Data locality 
+            - Fault tolerence
+    - rule of thumb : One process -> one context
+
+RDD 
+    - Collection of elements partitioned across the ndoes of the cluster that can be operated on in parallel
+    - stored as a DAGs for fault tolerence
+    - Transformations
+        - maps
+        - filters
+        - ...
+    - Actions
+        - collect
+        - count
